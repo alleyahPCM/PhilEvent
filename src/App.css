@@ -1,0 +1,264 @@
+.App {
+  height: 100vh;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  /*min-height: 100vh;*/
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+
+
+
+/* PhilEvent CSS */
+@font-face {
+  font-family: 'Baloo 2';
+  src: url('fonts/Baloo2-VariableFont_wght.ttf') format('ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.App {
+  font-family: 'Baloo 2', sans-serif;
+}
+
+.main-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.form {
+  display: flex;
+  justify-content: center; /* Horizontally center items */
+  align-items: center; /* Vertically center items */
+  flex: 1;
+}
+
+.logo-white {
+  opacity: 0.8;
+  max-width: 305px;
+  margin: 20px 10px 0px;
+}
+
+.error {
+  color: #E65F5C;
+}
+
+.line {
+  flex-grow: 1;
+  height: 2px;
+  background-color: #D9D9D9;
+  margin: 0 10px; 
+  mix-blend-mode: multiply;
+}
+
+.socials {
+  max-width: 55px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.15); /* Shadow effect */
+  border-radius: 50%;
+}
+
+.social-btn {
+  border: none;
+  background-color: transparent;
+}
+
+.social-space {
+  margin-right: 6%;
+}
+
+.eye {
+  border: none !important;
+  margin-left: -50px;
+  z-index: 1;
+}
+
+.eye-icon {
+  font-size: 24px;
+  color: #625834;
+}
+
+.already-text, .dont-have-text {
+  color: #625834;
+}
+
+/* Sign Up */
+.signup-background {
+  background-image: url('img/signup_bg.svg');
+  background-size: cover; 
+  background-repeat: no-repeat;
+  background-attachment: fixed; 
+}
+
+.signup-container {
+  position: relative;
+  max-width: 680px;
+  text-align: center;
+}
+
+.overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: rgb(255, 243, 234, 0.8);
+  mix-blend-mode: screen;
+}
+
+.signup-content {
+  position: relative;
+  padding: 40px 70px 20px;
+}
+
+.signup-text, .or-sign-up-text {
+  color: #DA7422;
+}
+
+.text-field {
+  border-radius: 45px !important;
+  height: 50px;
+  background-color: rgb(217, 217, 217, 0.8) !important;
+  mix-blend-mode: multiply;
+  color: #625834 !important;
+}
+
+.signup-text-field:focus {
+  border: 1px solid #e2a472 !important; 
+  box-shadow: 0 0 0 0.2rem rgb(218, 116, 34, 0.3) !important;
+}
+
+.text-field::placeholder {
+  color: #928a6c !important;
+}
+
+.custom-checkbox {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  margin-left: 10px;
+}
+
+.signup-custom-checkbox input[type="checkbox"] {
+  width: 18px; 
+  height: 18px;
+  border: 1px solid #DA7422; 
+  background-color: #FFF3EA; 
+  margin-right: 10px; 
+}
+
+.signup-custom-checkbox input[type="checkbox"]:checked {
+  background-color: #DA7422; 
+  color: #FFF3EA; 
+}
+
+.signup-custom-checkbox input[type="checkbox"]:focus {
+  box-shadow: 0 0 0 0.2rem rgb(218, 116, 34, 0.3);
+}
+
+.agree-text {
+  color: #DA7422;
+  vertical-align: middle;
+}
+
+.terms-and-conditions-link, .login-link {
+  text-decoration: none;
+  color: #A59132;
+  vertical-align: middle;
+}
+
+.terms-and-conditions-link:hover,.login-link:hover {
+  text-decoration: underline;
+}
+
+.signup-btn {
+  background-color: #DA7422 !important;
+  border-color: #DA7422 !important;
+  border-radius: 45px !important;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.15);
+  color: #FFF3EA;
+  height: 50px;
+  width: 100%;
+}
+
+
+
+/* Login */
+.login-background {
+  background-image: url('img/login_bg.svg');
+  background-size: cover; 
+  background-repeat: no-repeat;
+  background-attachment: fixed; 
+}
+
+.login-text, .or-login-text {
+  color: #A59132;
+}
+
+.login-text-field:focus {
+  border: 1px solid #928a6c !important; 
+  box-shadow: 0 0 0 0.2rem rgb(165, 145, 50, 0.3) !important;
+}
+
+.login-btn {
+  background-color: #A59132 !important;
+  border-color: #A59132 !important;
+  border-radius: 45px !important;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.15);
+  color: #FFF3EA;
+  height: 50px;
+  width: 100%;
+}
+
+.forgot-link, .signup-link {
+  text-decoration: none;
+  color: #DA7422;
+  vertical-align: middle;
+}
+
+.forgot-link:hover,.signup-link:hover {
+  text-decoration: underline;
+}
+
+.login-custom-checkbox input[type="checkbox"] {
+  width: 18px; 
+  height: 18px;
+  border: 1px solid #A59132; 
+  background-color: #FFF3EA; 
+  margin-right: 10px; 
+}
+
+.login-custom-checkbox input[type="checkbox"]:checked {
+  background-color: #A59132; 
+  color: #FFF3EA; 
+}
+
+.login-custom-checkbox input[type="checkbox"]:focus {
+  box-shadow: 0 0 0 0.2rem rgb(165, 145, 50, 0.3);
+}
+
+.remember-text {
+  color: #A59132;
+  vertical-align: middle;
+}
+
+.test {
+  justify-content: space-between;
+}
+
