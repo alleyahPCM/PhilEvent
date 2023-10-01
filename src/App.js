@@ -29,7 +29,7 @@ function App() {
   }
 
   return (
-    <div className={`App container-fluid d-flex flex-column ${backgroundClass}`}>
+    <div className={`App d-flex flex-column ${backgroundClass}`}>
       <SkeletonTheme baseColor="#D2D4DB" highlightColor="#F9FAFC">
         <Routes>
           <Route path="/" element={<Home/>}/>
