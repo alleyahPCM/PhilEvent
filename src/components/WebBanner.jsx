@@ -3,6 +3,7 @@ import Carousel from 'react-bootstrap/Carousel';
 import c1 from "../img/c1.jpg";
 import c2 from "../img/c2.png";
 import c3 from "../img/c3.jpg";
+import what from "../img/what_text.png";
 
 function WebBanner() {
     const [index, setIndex] = useState(0);
@@ -16,7 +17,7 @@ function WebBanner() {
             <Carousel.Item>
                 <img class="d-block w-100" id="carImg" src={c1} alt="Second slide" />
                 <Carousel.Caption>
-                    <h3>First slide label</h3>
+                    <img src={what} alt="What is PhilEvent?" className=""/>
                     <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
                 </Carousel.Caption>
             </Carousel.Item>

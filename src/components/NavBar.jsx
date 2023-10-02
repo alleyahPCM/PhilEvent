@@ -35,8 +35,8 @@ function NavBar() {
                         </InputGroup>
 
                     </Form>
-                    <a href='login' className='me-4' style={{ textDecoration: 'none', color: 'black' }}>Login</a>
-                    <Button className='me-4 rounded-pill' style={{ padding: '0.5em 1.5em', backgroundColor: '#DA7422', borderColor: '#DA7422'}}>Sign Up</Button>
+                    <a href='login' className='me-4' style={{ textDecoration: 'none', color: '#a59132' }}>Login</a>
+                    <Button className='me-4 rounded-pill' style={{ padding: '0.5em 1.5em', backgroundColor: '#DA7422', borderColor: '#DA7422', color: '#fff3ea'}}>Sign Up</Button>
                 </Navbar.Collapse>
             </Container>
         </Navbar>

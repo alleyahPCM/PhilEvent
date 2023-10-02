@@ -14,16 +14,16 @@ function Events() {
                     <img src={logo} style={{ width: '40%', marginBottom: '10px' }} alt="logo" /><br />
                     <BiMailSend style={{ fontSize: '26px', margin: '0 10px 5px 10px' }} /> <span style={{ fontSize: '23px' }}>PhilEvent@gmail.com</span> <br />
                     <div style={{ marginTop: '15px' }}>
-                        <a><img src={facebook} alt="google" style={{ width: '5%' }} /></a>
-                        <a><img src={linkedin} alt="google" style={{ width: '5%' }} /></a>
-                        <a><img src={twitter} alt="google" style={{ width: '5%' }} /></a>
+                        <a href='https://www.facebook.com/'><img src={facebook} alt="facebook" style={{ width: '5%' }} /></a>
+                        <a href='https://www.linkedin.com/'><img src={linkedin} alt="linkedin" style={{ width: '5%' }} /></a>
+                        <a href='https://twitter.com/'><img src={twitter} alt="twitter" style={{ width: '5%' }} /></a>
                     </div>
                 </div>
                 <div className='col'>
                     <div className='d-flex flex-column' style={{ float: 'right', padding: '10px', fontSize: '23px', textAlign: 'right'}}>
-                        <a>About Us</a>
-                        <a>Contact Us</a>
-                        <a>Privacy Policy</a>
+                        <a href='/aboutUs'>About Us</a>
+                        <a href='/contactUs'>Contact Us</a>
+                        <a href='/privacyPolicy'>Privacy Policy</a>
                     </div>
                 </div>
             </div>

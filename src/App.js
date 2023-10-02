@@ -8,6 +8,7 @@ import {Routes, Route, useLocation} from "react-router-dom";
 import Home from "./views/Home";
 import SignUp from "./views/SignUp";
 import Login from "./views/Login";
+import Interaction from "./views/Interaction";
 
 function App() {
   const location = useLocation();
@@ -35,6 +36,7 @@ function App() {
           <Route path="/" element={<Home/>}/>
           <Route path="/signup" element={<SignUp/>}/>
           <Route path="/login" element={<Login/>}/>
+          <Route path="/interaction" element={<Interaction/>}/>
         </Routes>
       </SkeletonTheme>
     </div>
