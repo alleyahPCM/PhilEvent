@@ -14,7 +14,7 @@ function Home() {
             <WebBanner />
 
             <div style={{padding: '0 1em'}}>
-                <div class="separator">Popular Events</div>
+                <div class="separator" style={{fontSize: '46px'}}>Popular Events</div>
 
                 <div className="filter">
                     <span>Date: </span>

@@ -3,15 +3,9 @@
   height: 100vh;
 }
 
-.App-header {
-  background-color: #282c34;
-  /*min-height: 100vh;*/
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+html, body {
+  margin: 0;
+  padding: 0;
 }
 
 /* PhilEvent CSS */
@@ -42,7 +36,6 @@
 .logo-white {
   opacity: 0.8;
   max-width: 305px;
-  margin: 20px 10px 0px;
 }
 
 .error {
@@ -72,6 +65,10 @@
   margin-right: 6%;
 }
 
+.socials-container {
+  padding: 2%;
+}
+
 .eye {
   border: none !important;
   margin-left: -50px;
@@ -86,6 +83,7 @@
 .already-text,
 .dont-have-text {
   color: #625834;
+  vertical-align: middle;
 }
 
 /* Sign Up */
@@ -98,7 +96,7 @@
 
 .signup-container {
   position: relative;
-  max-width: 680px;
+  max-width: 600px;
   text-align: center;
 }
 
@@ -285,7 +283,6 @@
 
 .separator {
   margin-top: 0.4em;
-  font-size: 46px;
   font-weight: bold;
   color: #a59132;
   display: flex;
@@ -300,7 +297,7 @@
 
 .separator::after {
   content: "";
-  flex: 75%;
+  flex: 70%;
   border-bottom: 4px solid #a59132;
 }
 
@@ -388,3 +385,5 @@
 .sidebar-link:active {
   color: #625834 !important;
 }
+
+

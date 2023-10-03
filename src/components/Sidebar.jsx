@@ -4,7 +4,7 @@ import { BiHome,  BiCalendar, BiCalendarHeart, BiCog, BiDoorOpen} from "react-ic
 
 function Sidebar() {
     return (
-        <Nav defaultActiveKey="/home" className="flex-column main-sidebar d-flex">    
+        <Nav defaultActiveKey="/home" className="flex-column main-sidebar d-flex p-2">    
             <Nav.Item>
                 <Nav.Link href="/home" className='sidebar-link'>
                     <BiHome className="sidebar-icons" /> 
