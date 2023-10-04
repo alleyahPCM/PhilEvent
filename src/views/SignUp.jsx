@@ -10,7 +10,6 @@ function SignUp() {
         <a href="/"><img src={logo} alt="logo-transparent" className="logo-white"/></a>
       </div>
   
-
       <div className="form">
         <SignUpForm/>
       </div>

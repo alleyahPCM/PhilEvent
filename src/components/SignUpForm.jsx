@@ -106,7 +106,7 @@ function SignUpForm() {
                <span className="or-sign-up-text">Or Sign Up With</span>
                <div className="line"></div>
             </div>
-            <div className="socials-container test">
+            <div className="socials-container">
                 <button className="social-space social-btn">
                     <img src={google} alt="google" className="socials"/>
                 </button>

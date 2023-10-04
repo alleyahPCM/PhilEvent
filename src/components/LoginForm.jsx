@@ -36,7 +36,7 @@ function LoginForm() {
     };
 
     return (
-        <div className="d-flex flex-column flex-grow-1 signup-container">
+        <div className="d-flex flex-column flex-grow-1 login-container">
         <div className="overlay"></div>
         <div className="d-flex flex-column signup-content">
             <h1 className="login-text">Login</h1>

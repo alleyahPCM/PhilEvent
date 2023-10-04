@@ -1,11 +1,11 @@
 import React from "react";
 import LoginForm from "../components/LoginForm";
-
+import { Stack } from 'react-bootstrap';
 import logo from "../img/logo_white.png";
 
 function Login() {
   return (
-    <div className="main-container">
+    <Stack className="main-container">
       <div>
         <a href="/"><img src={logo} alt="logo-transparent" className="logo-white"/></a>
       </div>
@@ -13,7 +13,7 @@ function Login() {
       <div className="form">
         <LoginForm/>
       </div>
-    </div>
+    </Stack>
   );
 }
 
