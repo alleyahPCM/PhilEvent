@@ -10,11 +10,12 @@ import Form from 'react-bootstrap/Form';
 import { loginSchema } from "../validations/UserValidation";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-// import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai'; 
+import axios from "axios";
 
 function LoginForm() {
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
 
     const {
         register,
@@ -24,9 +25,20 @@ function LoginForm() {
             resolver: yupResolver(loginSchema),
     });
 
-    const onSubmit = (data) => {
-        console.log(data);
-        // navigate('/');
+    const onSubmit = async (data) => {
+        try {
+            const response = await axios.post("http://localhost:8080/login", {
+                identifier: data.emailOrUname,
+                password: data.cpassword,
+            });
+
+            console.log(response.data);
+            if (response.data.success) {
+                navigate('/interaction');
+            }
+        } catch (error) {
+            console.error("Login failed:", error.response.data.error);
+        }
     };
 
     const [passwordVisible, setPasswordVisible] = useState(false);

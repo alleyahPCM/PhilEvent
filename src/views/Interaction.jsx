@@ -1,11 +1,28 @@
-import React from "react";
+import React, {useEffect} from "react";
 import NavBar from "../components/NavBar.jsx";
 import { Col } from 'react-bootstrap';
 
 import Sidebar from "../components/Sidebar.jsx";
 import Events from "../components/Events.jsx";
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function Interaction() {
+    const navigate = useNavigate();
+    axios.defaults.withCredentials = true
+    useEffect(() => {
+        axios.get("http://localhost:8080/")
+            .then(res => {
+                console.log(res)
+                if (res.data.valid) {
+
+                } else {
+                    navigate("/")
+                }
+            })
+            .catch(err => console.log(err))
+    }, [])
+
     return (
         <div className="main-container">
             <NavBar />

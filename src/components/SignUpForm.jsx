@@ -1,4 +1,5 @@
-import React, { useState} from "react";
+import React, {useState, useEffect} from "react";
+import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 
 import google from "../img/google.svg";
@@ -12,7 +13,6 @@ import Toast from 'react-bootstrap/Toast';
 import { signupSchema } from "../validations/UserValidation";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useNavigate } from 'react-router-dom';
 // import {useSignIn} from "react-auth-kit";
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai'; 
 
@@ -24,6 +24,18 @@ function SignUpForm() {
         resolver: yupResolver(signupSchema),
     });
 
+    axios.defaults.withCredentials = true
+    useEffect(() => {
+        axios.get("http://localhost:8080/")
+            .then(res => {
+                console.log(res)
+                if (res.data.valid) {
+                    navigate("/interaction")
+                }
+            })
+            .catch(err => console.log(err))
+    }, [])
+
     const onSubmit = async (data) => {
         const { terms, confirmPassword, ...formData } = data;
         console.log(formData);
@@ -34,7 +46,7 @@ function SignUpForm() {
             //     tokenType: "Bearer",
             //     authState: {email: data.email, name: data.firstName}
             // });
-            //navigate("/")
+            navigate("/interaction")
         } catch (err) {
             console.error(err);
             if (err.response && err.response.data && err.response.data.error) {

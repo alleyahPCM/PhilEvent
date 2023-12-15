@@ -1,8 +1,19 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Nav } from 'react-bootstrap';
 import { BiHome,  BiCalendar, BiCalendarHeart, BiCog, BiDoorOpen} from "react-icons/bi";
+import axios from 'axios';
 
 function Sidebar() {
+    const navigate = useNavigate()
+    const handleLogout = async () => {
+        try {
+            await axios.get("http://localhost:8080/logout");
+            navigate("/")
+        } catch (error) {
+            console.error("Logout failed:", error.response.data.message);
+        }
+    };
     return (
         <Nav defaultActiveKey="/home" className="flex-column main-sidebar d-flex p-2">    
             <Nav.Item>
@@ -31,7 +42,7 @@ function Sidebar() {
             </Nav.Item>
 
             <Nav.Item className="mt-auto">
-                <Nav.Link href="/logout" className='sidebar-link'>
+                <Nav.Link onClick={handleLogout} className='sidebar-link'>
                     <BiDoorOpen className="sidebar-icons" /> 
                     <span class="sidebar-text"> Log out </span>
                 </Nav.Link>

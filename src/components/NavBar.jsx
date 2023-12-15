@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
@@ -10,8 +10,25 @@ import FormControl from 'react-bootstrap/FormControl';
 
 import { AiOutlineSearch } from "react-icons/ai";
 import logo from "../img/logo_green.png";
+import axios from 'axios';
 
 function NavBar() {
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [name, setName] = useState('');
+
+    axios.defaults.withCredentials = true
+    useEffect(() => {
+        axios.get("http://localhost:8080/")
+        .then (res => {
+            if(res.data.valid) {
+                setIsLoggedIn(true);
+                setName(res.data.name)
+            }
+        })
+        .catch (err => console.log(err))
+    }, [])
+
+
     return (
         <Navbar expand="lg" className="bg-body-tertiary shadow">
             <Container fluid>
@@ -33,10 +50,17 @@ function NavBar() {
                                 <AiOutlineSearch />
                             </InputGroup.Text>
                         </InputGroup>
-
                     </Form>
+                    {!isLoggedIn ? (
+                        <>
                     <a href='login' className='me-4' style={{ textDecoration: 'none', color: '#a59132' }}>Login</a>
                     <Button href='signup' className='me-4 rounded-pill' style={{ padding: '0.5em 1.5em', backgroundColor: '#DA7422', borderColor: '#DA7422', color: '#fff3ea'}}>Sign Up</Button>
+                        </>
+                    ) : (
+                        <>
+                        Hello<a href='login' className='me-4' style={{ textDecoration: 'none', color: '#a59132' }}>{name}</a>
+                        </>
+                    )}
                 </Navbar.Collapse>
             </Container>
         </Navbar>
