@@ -4,6 +4,11 @@ import styled from 'styled-components';
 
 import { BiCalendarPlus } from 'react-icons/bi';
 import { AiFillHeart } from 'react-icons/ai';
+import { useParams } from 'react-router-dom';
+
+import { useState, useEffect } from 'react';
+import { fetchEventById } from '../data';
+import { Grid } from '@mui/material';
 
 const Title = styled.h2`
   font-weight: bold;
@@ -14,7 +19,7 @@ const CoverImg = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center;
+  object-position: top center;
   margin: 0 auto;
 `;
 
@@ -42,33 +47,67 @@ const StyledButton = styled(Button)`
 const Text = styled.span`
     font-size: 18px;
 `
+const EventLink = styled.a`
+  text-decoration: none;
+  color: #DA7422;
+
+  &:hover {
+    color: #D06023;
+    text-decoration: underline;
+  }
+`
 
 const EventTemplate = () => {
+  const {id} = useParams();
+
+  const [eventData, setEventData] = useState(null);
+
+  useEffect(() => {
+    const fetchDataById = async () => {
+      try {
+        const data = await fetchEventById(id);
+        setEventData(data);
+      } catch (error) {
+        console.error('Error fetching event data:', error);
+      }
+    };
+
+    fetchDataById();
+  }, [id]);
+
   return (
     <div>
-      <div style={{ height: 300 }}>
-        <CoverImg src="https://www.pinnacle.com/Cms_Data/Contents/Guest/Media/esports2017/Article-Images/CSGO/2022/2022-PGL-Major-Antwerp-articles/Plain-background-PGL-Logo-Pinnacle-In-case-we-need-to-do-ad-hoc-stuff-Article.jpg" alt="event" />
-      </div>
-      <Container style={{ marginTop: 30, display: 'flex', justifyContent: 'space-between' }}>
-        <div>
-          <Title>Title</Title>
-          <Text>Location</Text> <Text> | </Text>
-          <Text>Time</Text> <br />
-          <Text>Address</Text> <br /><br />
+    {eventData ? (
+      <div>
+        <div style={{ height: 300 }}>
+          <CoverImg src={eventData.img} alt="event" />
+        </div>
+        <Container style={{ marginTop: 30 }}>
+          <Grid container>
+            <Grid item xs={12} sm={6}>
+              <Title>{eventData.title}</Title>
+              <Text>{eventData.city}</Text> <Text> | </Text>
+              <Text>{eventData.time}</Text> <br />
+              <Text>{eventData.address}</Text> <br /><br />
 
-          <Text style={{color: '#da7422'}}>Price</Text><br/>
-          <p style={{fontSize: '18px'}}>Description</p><br/><br/>
-          <Text>Link Here</Text>
-        </div>
-        <div>
-          <StyledButton>
-            <BiCalendarPlus style={{ fontSize: '24px' }} />
-          </StyledButton>{' '}
-          <StyledButton variant="danger">
-            <AiFillHeart style={{ fontSize: '24px' }} />
-          </StyledButton>{' '}
-        </div>
-      </Container>
+              <Text style={{color: '#da7422'}}>{eventData.price}</Text><br/>
+              <p style={{fontSize: '18px', textAlign: 'justify'}}>{eventData.description}</p><br/>
+              <EventLink href={eventData.link}><Text>{eventData.link}</Text></EventLink>
+            </Grid>
+            <Grid item xs={12} sm={6} style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-start', padding: '10px' }}>
+              <StyledButton>
+                <BiCalendarPlus style={{ fontSize: '24px' }} />
+              </StyledButton>{' '}
+              <StyledButton>
+                <AiFillHeart style={{ fontSize: '24px' }} />
+              </StyledButton>{' '}
+            </Grid>
+          </Grid>
+        </Container>
+      </div>
+    ) : (
+      <p>Loading...</p>
+    )}
     </div>
   );
 };

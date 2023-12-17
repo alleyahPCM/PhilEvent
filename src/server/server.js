@@ -112,6 +112,40 @@ app.get("/allevents", (req, res) => {
   });
 });
 
+// GET request to fetch a specific event by ID
+app.get("/events/:id", (req, res) => {
+  const eventId = req.params.id;
+
+  // Use a query to fetch the event by ID from the database
+  const query = `SELECT * FROM events WHERE id = ${eventId}`;
+
+  db.query(query, (err, data) => {
+    if (err) {
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+
+    if (data.length === 0) {
+      return res.status(404).json({ error: "Event not found" });
+    }
+
+    // Assuming your data is structured similar to the previous response
+    const formattedEvent = {
+      id: data[0].id,
+      img: data[0].image,
+      title: data[0].title,
+      date: formatToMonthDayYear(data[0].date),
+      time: formatToTimeAMPM(data[0].time),
+      city: data[0].city.charAt(0).toUpperCase() + data[0].city.slice(1),
+      address: data[0].address,
+      description: data[0].description,
+      price: data[0].ticket_price,
+      link: data[0].link,
+    };
+
+    return res.json(formattedEvent);
+  });
+});
+
 app.get("/logout", (req, res) => {
   req.session.destroy((err) => {
     if (err) {

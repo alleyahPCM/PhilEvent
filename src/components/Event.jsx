@@ -3,6 +3,7 @@ import { Button, Card } from 'react-bootstrap';
 
 import { BiCalendarPlus } from 'react-icons/bi';
 import { AiFillHeart } from 'react-icons/ai';
+import { Link } from "react-router-dom"
 
 
 const EventContainer = styled.div`
@@ -57,7 +58,7 @@ const CardSection = styled.div`
   margin-top: -25px;
   margin-bottom: -20px;
 `
-const EventLink = styled.a`
+const EventLink = styled(Link)`
   text-decoration: none;
   color: #DA7422;
 
@@ -82,7 +83,7 @@ const Event = ({item}) => {
               </CardButton>
             </CardSection>
             <Card.Body>
-                <EventLink href={item.link}>
+                <EventLink to={`/Event/${item.title}/${item.id}`}>
                   <Card.Title style={{fontSize: 20, fontWeight: 'bold'}}>{Title}</Card.Title>
                 </EventLink>
                 <Card.Text id='cardContent' style={{fontSize: 16}}>

@@ -42,7 +42,7 @@ function App() {
         <Route path="/Calendar" element={<UserCalendar/>}/>
         <Route path="/MyEvents" element={<UserEvents/>}/>
         <Route path="/Settings" element={<UserSettings/>}/>
-        <Route path="/Event" element={<Event/>}/>
+        <Route path="/Event/:title/:id" element={<Event/>}/>
       </Routes>
     </div>
   );

@@ -57,6 +57,7 @@ const customStyles = {
     ...provided,
     marginTop: 0,
     width: 140,
+    zIndex: 9999,
   }),
   valueContainer: (provided) => ({
     ...provided,
