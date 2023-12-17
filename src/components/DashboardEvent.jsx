@@ -1,7 +1,8 @@
 import { Card, Col, Row } from 'react-bootstrap';
 import styled from 'styled-components';
+import { Link } from "react-router-dom"
 
-const EventLink = styled.a`
+const EventLink = styled(Link)`
   text-decoration: none;
   color: #DA7422;
 
@@ -24,11 +25,11 @@ const DashboardEvent = ({item}) => {
         </Col>
         <Col md={10}>
           <Card.Body>
-            <EventLink href={item.link}>
+            <EventLink to={`/Event/${item.title}/${item.id}`}>
                   <Card.Title style={{fontWeight: 'bold'}}>{item.title}</Card.Title>
             </EventLink>
             <Card.Text>
-                <span>{item.date}</span><span> | </span>
+                <span>{item.address}</span><span> | </span>
                 <span>{item.time}</span>
             </Card.Text>
           </Card.Body>

@@ -1,7 +1,9 @@
 import { useRef, useEffect }from 'react'
 import { Container } from 'react-bootstrap';
 import styled from 'styled-components';
-//import { sample } from '../data';
+import { sample } from '../data';
+import DashboardEvent from './DashboardEvent';
+
 
 const Title = styled.h2`
   font-weight: bold;
@@ -30,9 +32,9 @@ const Dashboard = () => {
           <h5>Sunday</h5>
           <hr/>
           <div>
-            {/* {sample.map((item) => (
+            {sample.map((item) => (
               <DashboardEvent item={item} key={item.id}/>
-            ))} */}
+            ))}
           </div>
           <h5>Monday</h5>
           <hr/>
