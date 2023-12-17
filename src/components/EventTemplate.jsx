@@ -86,8 +86,9 @@ const EventTemplate = () => {
           <Grid container>
             <Grid item xs={12} sm={6}>
               <Title>{eventData.title}</Title>
-              <Text>{eventData.city}</Text> <Text> | </Text>
+              <Text>{eventData.date} </Text> <Text> | </Text>
               <Text>{eventData.time}</Text> <br />
+              <Text>{eventData.city}</Text><br/>
               <Text>{eventData.address}</Text> <br /><br />
 
               <Text style={{color: '#da7422'}}>{eventData.price}</Text><br/>
