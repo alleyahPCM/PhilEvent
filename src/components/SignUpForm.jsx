@@ -31,7 +31,7 @@ function SignUpForm() {
                 }
             })
             .catch(err => console.log(err))
-    }, [])
+    }, [navigate])
 
     const onSubmit = async (data) => {
         const { terms, confirmPassword, ...formData } = data;

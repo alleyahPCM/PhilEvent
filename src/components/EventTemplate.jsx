@@ -57,7 +57,8 @@ const EventTemplate = () => {
           <Text>Address</Text> <br /><br />
 
           <Text style={{color: '#da7422'}}>Price</Text><br/>
-          <p style={{fontSize: '18px'}}>Description</p>
+          <p style={{fontSize: '18px'}}>Description</p><br/><br/>
+          <Text>Link Here</Text>
         </div>
         <div>
           <StyledButton>

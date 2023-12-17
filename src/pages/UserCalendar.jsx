@@ -18,7 +18,7 @@ const UserCalendar = () => {
         }
       })
       .catch(err => console.log(err))
-  }, [])
+  }, [navigate])
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>

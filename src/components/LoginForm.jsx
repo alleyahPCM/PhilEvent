@@ -50,7 +50,7 @@ function LoginForm() {
                 }
             })
             .catch(err => console.log(err))
-    }, [])
+    }, [navigate])
 
     const [passwordVisible, setPasswordVisible] = useState(false);
 

@@ -62,7 +62,7 @@ const Settings = () => {
       })
       .catch(err => console.log(err))
     console.log(userInfo)
-  }, [])
+  }, [userInfo])
 
   useEffect(() => {
     const content = contentRef.current;

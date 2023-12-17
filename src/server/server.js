@@ -76,10 +76,20 @@ app.get("/", (req,res) => {
 
 app.get("/allevents", (req, res) => {
   let q = "SELECT * FROM events";
-  const { city } = req.query;
+  const { city, startDate, endDate } = req.query;
+
+  const filters = [];
 
   if (city) {
-    q += ` WHERE city = '${city}'`; // Update the SQL query to filter by city
+    filters.push(`city = '${city}'`);
+  }
+
+  if (startDate && endDate) {
+    filters.push(`date BETWEEN '${startDate}' AND '${endDate}'`);
+  }
+
+  if (filters.length > 0) {
+    q += ` WHERE ${filters.join(' AND ')}`;
   }
 
   db.query(q, (err, data) => {
