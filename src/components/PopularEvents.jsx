@@ -2,11 +2,10 @@ import { Container } from 'react-bootstrap';
 import styled from 'styled-components';
 
 import Select from 'react-select';
-import { popularEvents } from '../data';
 import Event from './Event';
-
-import Pagination from '@mui/material/Pagination';
-import Stack from '@mui/material/Stack';
+import { useState, useEffect, useCallback } from 'react';
+import axios from "axios";
+import { fetchdata } from '../data';
 
 const Title = styled.h2`
   font-weight: bold;
@@ -70,13 +69,15 @@ const customStyles = {
 };
 
 const date = [
+  { value: '', label: 'Select Date', isDisabled: true },
   { value: 'Today', label: 'Today' },
   { value: 'This Week', label: 'This Week' },
   { value: 'This Month', label: 'This Month' },
   { value: 'This Year', label: 'This Year' },
 ];
 
-const location = [
+const city = [
+  { value: '', label: 'Select City', isDisabled: true },
   { value: 'Cebu', label: 'Cebu' },
   { value: 'Manila', label: 'Manila' },
   { value: 'Davao', label: 'Davao' },
@@ -87,16 +88,40 @@ const EventsContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
+  justify-content: center; 
 `
 
-const PaginationContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-top: 20px; /* Adjust margin as needed */
-`;
-
 const PopularEvents = () => {
+  const [selectedCity, setSelectedCity] = useState('');
+  const [events, setEvents] = useState([]); // State to hold events
+
+  const handleCityChange = (selectedOption) => {
+    setSelectedCity(selectedOption.value);
+  };
+
+  const fetchEventsByCity = useCallback(async () => {
+    try {
+      const res = await axios.get(`http://localhost:8080/allevents?city=${selectedCity}`);
+      return res.data;
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }, [selectedCity]); // Include selectedCity in the dependency array
+
+  useEffect(() => {
+    const fetchData = async () => {
+      let data;
+      if (selectedCity === '') {
+        data = await fetchdata();
+      } else {
+        data = await fetchEventsByCity();
+      }
+      setEvents(data);
+    };
+    fetchData();
+  }, [selectedCity, fetchEventsByCity]);
+
   return (
     <Container style={{ marginTop: 30, marginBottom: 50}}>
     <Title>Popular Events</Title>
@@ -113,22 +138,18 @@ const PopularEvents = () => {
       <Filter>
         <FilterText>Location: </FilterText>
         <Select
-          options={location}
+          options={city}
           styles={customStyles}
-          defaultValue={location[0]}
+          defaultValue={city[0]}
+          onChange={handleCityChange} // Handle city selection change
         />
       </Filter>
     </FilterContainer>
     <EventsContainer>
-      {popularEvents.map((item) => (
-        <Event item={item} key={item.id}/>
+      {events.map((item) => (
+          <Event item={item} key={item.id} />
       ))}
     </EventsContainer>
-    <Stack spacing={2}>
-      <PaginationContainer>
-        <Pagination count={10} />
-      </PaginationContainer>
-    </Stack>
   </Container>
   );
 };

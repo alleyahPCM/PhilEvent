@@ -5,10 +5,8 @@ npm i --save react-select
 npm install react-icons --save
 
 npm install react-router-dom
-npm install react-multi-carousel --save
 npm install react-hook-form
 npm install yup
-npm install react-hook-form
 npm install @hookform/resolvers yup
 npm install axios
 

@@ -10,6 +10,7 @@ const EventContainer = styled.div`
 `
 const EventCard = styled(Card)`
   width: 18rem;
+  height: 300px;
 `
 const EventImg = styled.img`
   width: 100%;
@@ -26,49 +27,26 @@ const CardButton = styled(Button)`
   background-color: white;
   border: none;
   box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.2);
+  color: black;
 
   &:hover, &:focus {
     background-color: #DA7422;
+    color: white !important;
   }
 
   &:active {
     background-color: #D06023  !important;
+    color: white !important;
   }
 }
 `
 
 const StyledBiCalendarPlus = styled(BiCalendarPlus)`
   font-size: 24px;
-  color: black;
-
-  ${CardButton}:hover & {
-    color: white;
-  }
-
-  ${CardButton}:focus & {
-    color: white;
-  }
-
-  ${CardButton}:active & {
-    color: white;
-  }
 `;
 
 const StyledAiFillHeart = styled(AiFillHeart)`
   font-size: 24px;
-  color: black;
-
-  ${CardButton}:hover & {
-    color: white;
-  }
-
-  ${CardButton}:focus & {
-    color: white;
-  }
-
-  ${CardButton}:active & {
-    color: white;
-  }
 `;
 
 const CardSection = styled.div`
@@ -89,6 +67,8 @@ const EventLink = styled.a`
 `
 
 const Event = ({item}) => {
+  const Title = (item.title).length > 45 ? (item.title).slice(0, 45) + '...' : (item.title);
+
   return (
     <EventContainer>
       <EventCard>
@@ -103,12 +83,12 @@ const Event = ({item}) => {
             </CardSection>
             <Card.Body>
                 <EventLink href={item.link}>
-                  <Card.Title style={{fontSize: 24, fontWeight: 'bold'}}>{item.title}</Card.Title>
+                  <Card.Title style={{fontSize: 20, fontWeight: 'bold'}}>{Title}</Card.Title>
                 </EventLink>
                 <Card.Text id='cardContent' style={{fontSize: 16}}>
                     <span>{item.date}</span><span> | </span>
                     <span>{item.time}</span> <br/>
-                    <span>{item.location}</span> <br/>
+                    <span>{item.city}</span> <br/>
                     <span style={{color: '#DA7422'}}>{item.price}</span>
                 </Card.Text>
             </Card.Body>

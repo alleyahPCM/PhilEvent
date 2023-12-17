@@ -75,7 +75,13 @@ app.get("/", (req,res) => {
 })
 
 app.get("/allevents", (req, res) => {
-  const q = "SELECT * FROM events";
+  let q = "SELECT * FROM events";
+  const { city } = req.query;
+
+  if (city) {
+    q += ` WHERE city = '${city}'`; // Update the SQL query to filter by city
+  }
+
   db.query(q, (err, data) => {
     if (err) {
       return res.status(500).json({ error: "Internal Server Error" });
@@ -87,7 +93,7 @@ app.get("/allevents", (req, res) => {
       title: event.title,
       date: formatToMonthDayYear(event.date),
       time: formatToTimeAMPM(event.time),
-      location: event.address,
+      city: event.city.charAt(0).toUpperCase() + event.city.slice(1),
       price: event.ticket_price,
       link: event.link,
     }));
