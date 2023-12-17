@@ -1,14 +1,16 @@
-import React from "react";
+import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+import Home from './pages/Home';
+import UserEvents from './pages/UserEvents';
+import UserHome from './pages/UserHome';
+import UserCalendar from './pages/UserCalendar';
 
 import './App.css';
-import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
-import { SkeletonTheme } from "react-loading-skeleton";
-import {Routes, Route, useLocation} from "react-router-dom";
 
-import Home from "./views/Home";
-import SignUp from "./views/SignUp";
-import Login from "./views/Login";
-import Interaction from "./views/Interaction";
+import {Routes, Route, useLocation} from "react-router-dom";
+import UserSettings from './pages/UserSettings';
+import Signup from './pages/Signup';
+import Login from './pages/Login';
+import Event from './pages/Event';
 
 function App() {
   const location = useLocation();
@@ -19,26 +21,29 @@ function App() {
     case '/':
       backgroundClass = 'home-background';
       break;
-    case '/signup':
+    case '/Signup':
       backgroundClass = 'signup-background';
       break;
-    case '/login':
+    case '/Login':
       backgroundClass = 'login-background';
       break;
     default:
       backgroundClass = ''; // Handle unknown routes
   }
 
+
   return (
     <div className={`App d-flex flex-column ${backgroundClass}`}>
-      <SkeletonTheme baseColor="#D2D4DB" highlightColor="#F9FAFC">
-        <Routes>
-          <Route path="/" element={<Home/>}/>
-          <Route path="/signup" element={<SignUp/>}/>
-          <Route path="/login" element={<Login/>}/>
-          <Route path="/interaction" element={<Interaction/>}/>
-        </Routes>
-      </SkeletonTheme>
+      <Routes>
+        <Route path="/" element={<Home/>}/>
+        <Route path="/Login" element={<Login/>}/>
+        <Route path="/Signup" element={<Signup/>}/>
+        <Route path="/UserHome" element={<UserHome/>}/>
+        <Route path="/Calendar" element={<UserCalendar/>}/>
+        <Route path="/MyEvents" element={<UserEvents/>}/>
+        <Route path="/Settings" element={<UserSettings/>}/>
+        <Route path="/Event" element={<Event/>}/>
+      </Routes>
     </div>
   );
 }

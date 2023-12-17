@@ -1,5 +1,4 @@
-import React, {useState, useEffect} from "react";
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect} from "react";
 import axios from "axios";
 
 import google from "../img/google.svg";
@@ -13,24 +12,22 @@ import Toast from 'react-bootstrap/Toast';
 import { signupSchema } from "../validations/UserValidation";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-// import {useSignIn} from "react-auth-kit";
+import { useNavigate } from 'react-router-dom';
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai'; 
 
 function SignUpForm() {
     const navigate = useNavigate();
-    //const signin = useSignIn();
     const [errorMessage, setErrorMessage] = useState('');
     const {register, handleSubmit, formState: { errors }} = useForm({
         resolver: yupResolver(signupSchema),
     });
 
-    axios.defaults.withCredentials = true
     useEffect(() => {
         axios.get("http://localhost:8080/")
             .then(res => {
                 console.log(res)
                 if (res.data.valid) {
-                    navigate("/interaction")
+                    navigate("/UserHome")
                 }
             })
             .catch(err => console.log(err))
@@ -41,12 +38,7 @@ function SignUpForm() {
         console.log(formData);
         try {
             await axios.post("http://localhost:8080/signup", formData);
-            // signin({
-            //     expiresIn: 3600,
-            //     tokenType: "Bearer",
-            //     authState: {email: data.email, name: data.firstName}
-            // });
-            navigate("/interaction")
+            navigate("/UserHome")
         } catch (err) {
             console.error(err);
             if (err.response && err.response.data && err.response.data.error) {
@@ -74,18 +66,18 @@ function SignUpForm() {
         <div className="d-flex flex-column flex-grow-1 signup-container">
         <div className="overlay"></div>
         <div className="d-flex flex-column signup-content">
-            <h1 className="signup-text">Sign Up</h1>
+            <h2 className="signup-text">Sign Up</h2>
             
             <Form onSubmit={handleSubmit(onSubmit)}>
                 <div className="d-flex">
                     <Form.Group className="mb-3" controlId="formBasicFirstName">
                         <Form.Control className="text-field signup-text-field" type="text" placeholder="First Name" {...register("firstName")} />
-                        <p className="error">{errors.firstName?.message}</p>
+                        {/* <p className="error">{errors.firstName?.message}</p> */}
                     </Form.Group>
 
                     <Form.Group className="mb-3 ms-3" controlId="formBasicLastName">
                             <Form.Control className="text-field signup-text-field" type="text" placeholder="Last Name" {...register("lastName")} />
-                        <p className="error">{errors.lastName?.message}</p>
+                        {/* <p className="error">{errors.lastName?.message}</p> */}
                     </Form.Group>
                 </div>
 
@@ -170,7 +162,7 @@ function SignUpForm() {
             </div>
             <div>
                 <span className="already-text">Already have an account? </span>
-                <a className="login-link" href="/login">
+                <a className="login-link" href="/Login">
                     Login
                 </a>
             </div>

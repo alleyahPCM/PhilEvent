@@ -1,10 +1,60 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Nav } from 'react-bootstrap';
-import { BiHome,  BiCalendar, BiCalendarHeart, BiCog, BiDoorOpen} from "react-icons/bi";
+import { MeetingRoom, Settings } from "@mui/icons-material"
+import { Container, Typography } from "@mui/material"
+import { BsCalendarWeekFill, BsCalendarHeartFill } from "react-icons/bs";
+import styled from 'styled-components';
+import { AiFillHome } from "react-icons/ai";
+import { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-function Sidebar() {
+const SidebarItem = styled.a`
+    display: flex;
+    padding-top: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
+    justify-content: flex-start;
+    color: white;
+    text-decoration: none;
+
+    &:not(.active):hover {
+        color: #f9f2db;
+        cursor: pointer;
+    }
+
+    &.active {
+        color: #625834;
+        cursor: pointer;
+    }
+
+    @media (max-width: 900px) {
+        justify-content: center;
+    }
+`
+
+const SideContainer = styled(Container)`
+    padding: 30px;
+    height: 100%;
+`
+
+const HiddenTypography = styled(Typography)`
+    padding-left: 5px;
+    @media (max-width: 900px) {
+        display: none;
+    }
+`
+
+const Sidebar = () => {
+    const location = useLocation();
+    const [currentPath, setCurrentPath] = useState(location.pathname);
+
+    useEffect(() => {
+        setCurrentPath(location.pathname);
+    }, [location]);
+
+    const isActive = (path) => {
+        return path === currentPath ? 'active' : '';
+    };
+
     const navigate = useNavigate()
     const handleLogout = async () => {
         try {
@@ -14,41 +64,36 @@ function Sidebar() {
             console.error("Logout failed:", error.response.data.message);
         }
     };
-    return (
-        <Nav defaultActiveKey="/home" className="flex-column main-sidebar d-flex p-2">    
-            <Nav.Item>
-                <Nav.Link href="/home" className='sidebar-link'>
-                    <BiHome className="sidebar-icons" /> 
-                    <span class="sidebar-text"> Home</span>
-                </Nav.Link>
-            </Nav.Item>
-            <Nav.Item>
-                <Nav.Link href="/calendar" className='sidebar-link' >
-                    <BiCalendar className="sidebar-icons" /> 
-                    <span class="sidebar-text"> Calendar </span>
-                </Nav.Link>
-            </Nav.Item>
-            <Nav.Item>
-                <Nav.Link href="/myEvents" className='sidebar-link'>
-                    <BiCalendarHeart className="sidebar-icons" /> 
-                    <span class="sidebar-text"> My Events </span>
-                </Nav.Link>
-            </Nav.Item>
-            <Nav.Item>
-                <Nav.Link href="/settings" className='sidebar-link'>
-                    <BiCog className="sidebar-icons" /> 
-                    <span class="sidebar-text"> Settings </span>
-                </Nav.Link>
-            </Nav.Item>
 
-            <Nav.Item className="mt-auto">
-                <Nav.Link onClick={handleLogout} className='sidebar-link'>
-                    <BiDoorOpen className="sidebar-icons" /> 
-                    <span class="sidebar-text"> Log out </span>
-                </Nav.Link>
-            </Nav.Item>
-        </Nav>
+    return (
+        <SideContainer>
+            <div className="d-flex flex-column justify-content-between" style={{ height: '100%' }}>
+                <div>
+                    <SidebarItem href="/UserHome" className={isActive('/UserHome')}>
+                        <AiFillHome style={{ width: 20, height: 20 }} />
+                        <HiddenTypography>Home</HiddenTypography>
+                    </SidebarItem>
+                    <SidebarItem href="/Calendar" className={isActive('/Calendar')}>
+                        <BsCalendarWeekFill style={{ width: 20, height: 20 }} />
+                        <HiddenTypography>Calendar</HiddenTypography>
+                    </SidebarItem>
+                    <SidebarItem href="/MyEvents" className={isActive('/MyEvents')}>
+                        <BsCalendarHeartFill style={{ width: 20, height: 20 }} />
+                        <HiddenTypography>My Events</HiddenTypography>
+                    </SidebarItem>
+                    <SidebarItem href="/Settings" className={isActive('/Settings')}>
+                        <Settings style={{ width: 20, height: 20 }} />
+                        <HiddenTypography>Settings</HiddenTypography>
+                    </SidebarItem>
+                </div>
+
+                <SidebarItem onClick={handleLogout}>
+                    <MeetingRoom style={{ width: 20, height: 20 }} />
+                    <HiddenTypography>Logout</HiddenTypography>
+                </SidebarItem>
+            </div>
+        </SideContainer>
     );
 }
 
-export default Sidebar;
+export default Sidebar

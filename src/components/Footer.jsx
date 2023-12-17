@@ -1,36 +1,110 @@
-import React from 'react';
-import logo from '../img/logo_peach.png'
+import styled from 'styled-components';
+import { Container } from 'react-bootstrap';
+import { Email, Facebook, LinkedIn, Twitter } from '@mui/icons-material';
+import LogoWhite from '../img/logo-white.png';
 
-import { BiMailSend } from 'react-icons/bi';
-import facebook from "../img/facebook_footer.png";
-import linkedin from "../img/linkedin_footer.png";
-import twitter from "../img/twitter_footer.png";
+const FooterContainer = styled.div`
+  background-color: #A59132;
+`
 
-function Events() {
-    return (
-        <footer style={{ background: '#A59132', padding: '2em 1em .2em 1em', color: '#FFF3EA' }}>
-            <div className='row' style={{ marginBottom: '15px' }}>
-                <div className='col'>
-                    <img src={logo} style={{ width: '40%', marginBottom: '10px' }} alt="logo" /><br />
-                    <BiMailSend style={{ fontSize: '26px', margin: '0 10px 5px 10px' }} /> <span style={{ fontSize: '23px' }}>PhilEvent@gmail.com</span> <br />
-                    <div style={{ marginTop: '15px' }}>
-                        <a href='https://www.facebook.com/'><img src={facebook} alt="facebook" style={{ width: '5%' }} /></a>
-                        <a href='https://www.linkedin.com/'><img src={linkedin} alt="linkedin" style={{ width: '5%' }} /></a>
-                        <a href='https://twitter.com/'><img src={twitter} alt="twitter" style={{ width: '5%' }} /></a>
-                    </div>
-                </div>
-                <div className='col'>
-                    <div className='d-flex flex-column' style={{ float: 'right', padding: '10px', fontSize: '23px', textAlign: 'right'}}>
-                        <a href='/aboutUs'>About Us</a>
-                        <a href='/contactUs'>Contact Us</a>
-                        <a href='/privacyPolicy'>Privacy Policy</a>
-                    </div>
-                </div>
+const LeftFooter = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+`
+
+const RightFooter = styled.div`
+  flex: 1;
+  text-align: right;
+  color: white;
+`
+const LogoText = styled.h2`
+    font-weight: bold;
+    color: white;
+    margin-left: 5px;
+    margin-top: 5px;
+`
+
+const EmailContainer = styled.div`
+    color: white;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+`
+
+const SocialContainer = styled.div`
+    color: white;
+    display: flex;
+`
+
+const SocialIcon = styled.div`
+  margin-right: 5px;
+`
+
+const Title = styled.h4`
+  margin-botton: 5px;
+`
+
+const List = styled.ul`
+  margin: 0;
+  padding: 0;
+  list-style: none;
+`
+
+const ListItem = styled.li`
+  margin-bottom: 2px;
+`
+const SubContainer = styled.div`
+  display: flex;
+`
+const CopyrightContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  color: white;
+`;
+
+const Footer = () => {
+  return (
+    <FooterContainer>
+      <Container style={{paddingTop: 30, paddingBottom: 30}}>
+        <SubContainer>
+          <LeftFooter>
+            <div style={{display: 'flex'}}>
+              <img src={LogoWhite} alt='logo' style={{width: 40, height: 40}}/>
+              <LogoText>PhilEvent.</LogoText>
             </div>
-            <div style={{ border: '2px solid' }} />
-            <p className="text-center" style={{ fontSize: '18px', marginTop: '15px' }}>&copy;2023 PhilEvent.</p>
-        </footer>
-    );
+            <EmailContainer>
+              <Email/>
+              <span style={{ marginLeft: 5}}>PhilEvent@gmail.com</span>
+            </EmailContainer>
+            <SocialContainer>
+                <SocialIcon>
+                  <Facebook/>
+                </SocialIcon>
+                <SocialIcon>
+                  <Twitter/>
+                </SocialIcon>
+                <SocialIcon>
+                  <LinkedIn/>
+                </SocialIcon>
+            </SocialContainer>
+          </LeftFooter>
+          <RightFooter>
+            <Title>Links</Title>
+            <List>
+              <ListItem>About Us</ListItem>
+              <ListItem>Contact Us</ListItem>
+              <ListItem>Privacy Policy</ListItem>
+            </List>
+          </RightFooter>
+        </SubContainer>
+        <hr/>
+        <CopyrightContainer>
+          <span>©2023 PhilEvent.</span>
+        </CopyrightContainer>
+      </Container>
+    </FooterContainer>
+  )
 }
 
-export default Events;
+export default Footer

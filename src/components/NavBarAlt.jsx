@@ -1,7 +1,10 @@
-import { Container, Nav, Navbar, Form, Button } from 'react-bootstrap';
+import { useState } from 'react';
+import { Container, Nav, Navbar, Form, Dropdown } from 'react-bootstrap';
 import styled from 'styled-components';
-import { Search } from '@mui/icons-material';
+import { NotificationsOutlined, Search } from '@mui/icons-material';
 import LogoGreen from '../img/logo-green.png';
+import Badge from '@mui/material/Badge';
+import { useMediaQuery } from '@mui/material';
 
 const LogoText = styled.h2`
     font-weight: bold;
@@ -9,39 +12,7 @@ const LogoText = styled.h2`
     margin-left: 5px;
     margin-top: 5px;
 `
-const LoginButton = styled(Button)`
-    width: 90px;
-    color: #DA7422;
-    border-radius: 45px;
-    background-color: transparent;
-    border: 1px solid #DA7422;
 
-    &:hover {
-        background-color: #f9f2db;
-        border: 1px solid #DA7422;
-        color: #DA7422;
-    }
-
-    &:active {
-        background-color: #f9f2db !important;
-        border: 1px solid #DA7422 !important;
-        color: #DA7422 !important;
-    }
-`
-const SignUpButton = styled(Button)`
-    width: 90px;
-    border-radius: 45px;
-    background-color: #DA7422;
-    border: none;
-
-    &:hover {
-        background-color: #D06023;
-    }
-
-    &:active {
-        background-color: #D06023 !important;
-    }
-`
 const SearchContainer = styled.div`
   display: flex;
   align-items: center;
@@ -81,7 +52,29 @@ const Link = styled.span`
     }
 `
 
-const NavBar = () => {
+const CustomBadge = styled(Badge)(({ theme }) => ({
+    cursor: 'pointer',
+    '& .MuiBadge-badge': {
+      backgroundColor: '#DA7422', // Replace 'orange' with your desired color
+      color: 'white', // Text color of the badge
+    },
+}));
+
+const CustomDropdownToggle = styled(Dropdown.Toggle)`
+    &::after {
+        display: none; /* Hide the arrow icon */
+    }
+`;
+
+const NavBarAlt = () => {
+    const isSmallScreen = useMediaQuery('(max-width: 995px)'); // Change the breakpoint as needed
+
+    const [showNotifications, setShowNotifications] = useState(false);
+
+    const handleNotificationsToggle = () => {
+      setShowNotifications(!showNotifications);
+    };
+
   return (
     <Navbar collapseOnSelect expand="lg" style={{ backgroundColor: 'white', borderBottom: '1px solid #ced4da' }}>
         <Container>
@@ -92,6 +85,7 @@ const NavBar = () => {
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
             <Navbar.Collapse id="responsive-navbar-nav">
                 <Nav className="me-auto">
+                    <Nav.Link href="/UserHome"><Link>Home</Link></Nav.Link>
                     <Nav.Link href="#events"><Link>Events</Link></Nav.Link>
                     <Nav.Link href="#places"><Link>Places</Link></Nav.Link>
                 </Nav>
@@ -107,8 +101,23 @@ const NavBar = () => {
                     </SearchContainer>
                 </Form>
                 <Nav>
-                    <Nav.Link href="/Login"><LoginButton>Login</LoginButton></Nav.Link>
-                    <Nav.Link href="/Signup"><SignUpButton>Sign Up</SignUpButton></Nav.Link>
+                {isSmallScreen ? (
+                    <Nav.Link href="#notifications"><Link>Notifications</Link></Nav.Link>
+                ) : (
+                    <>
+                    <CustomBadge badgeContent={4} onClick={handleNotificationsToggle}>
+                        <NotificationsOutlined color="action" />
+                    </CustomBadge>
+                    <Dropdown align="end" show={showNotifications} onClose={() => setShowNotifications(false)}>
+                        <CustomDropdownToggle as={CustomBadge} id="notifications-dropdown" />
+                        <Dropdown.Menu>
+                        <Dropdown.Item href="#notification1">Notification 1</Dropdown.Item>
+                        <Dropdown.Item href="#notification2">Notification 2</Dropdown.Item>
+                        <Dropdown.Item href="#notification3">Notification 3</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
+                    </>
+                )}
                 </Nav>
             </Navbar.Collapse>
         </Container>
@@ -116,4 +125,4 @@ const NavBar = () => {
   )
 }
 
-export default NavBar
+export default NavBarAlt

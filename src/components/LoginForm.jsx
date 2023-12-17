@@ -1,4 +1,4 @@
-import React, { useState} from "react";
+import React, { useState, useEffect } from "react";
 
 import google from "../img/google.svg";
 import facebook from "../img/facebook.svg";
@@ -21,10 +21,10 @@ function LoginForm() {
         register,
         handleSubmit,
         formState: { errors },
-        } = useForm({
-            resolver: yupResolver(loginSchema),
+    } = useForm({
+        resolver: yupResolver(loginSchema),
     });
-
+    
     const onSubmit = async (data) => {
         try {
             const response = await axios.post("http://localhost:8080/login", {
@@ -34,24 +34,35 @@ function LoginForm() {
 
             console.log(response.data);
             if (response.data.success) {
-                navigate('/interaction');
+                navigate('/UserHome');
             }
         } catch (error) {
             console.error("Login failed:", error.response.data.error);
         }
     };
 
+    useEffect(() => {
+        axios.get("http://localhost:8080/")
+            .then(res => {
+                console.log(res)
+                if (res.data.valid) {
+                    navigate("/UserHome")
+                }
+            })
+            .catch(err => console.log(err))
+    }, [])
+
     const [passwordVisible, setPasswordVisible] = useState(false);
 
     const togglePasswordVisibility = () => {
-      setPasswordVisible(!passwordVisible);
+        setPasswordVisible(!passwordVisible);
     };
 
     return (
         <div className="d-flex flex-column flex-grow-1 login-container">
         <div className="overlay"></div>
         <div className="d-flex flex-column signup-content">
-            <h1 className="login-text">Login</h1>
+            <h2 className="login-text">Login</h2>
             
             <Form onSubmit={handleSubmit(onSubmit)}>
                 <Form.Group className="mb-3" controlId="formBasicEmailOrUsername">
@@ -114,7 +125,7 @@ function LoginForm() {
             <br/>
             <div>
                 <span className="already-text dont-have-text">Don't have an account? </span>
-                <a className="signup-link" href="/signup">
+                <a className="signup-link" href="/Signup">
                     Sign Up
                 </a>
             </div>
