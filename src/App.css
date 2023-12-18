@@ -66,6 +66,7 @@
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
+    height: 100%; /* Ensure the background covers the full viewport height */
   }
   
   .signup-container, .login-container {
@@ -170,6 +171,7 @@
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
+    height: 100%; 
   }
   
   .login-text {
@@ -232,5 +234,3 @@
   .test {
     justify-content: space-between;
   }
-  
- 

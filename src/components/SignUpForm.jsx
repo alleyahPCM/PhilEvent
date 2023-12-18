@@ -70,14 +70,22 @@ function SignUpForm() {
                 <div className="d-flex">
                     <Form.Group className="mb-3" controlId="formBasicFirstName">
                         <Form.Control className="text-field signup-text-field" type="text" placeholder="First Name" {...register("firstName")} />
-                        {/* <p className="error">{errors.firstName?.message}</p> */}
                     </Form.Group>
 
                     <Form.Group className="mb-3 ms-3" controlId="formBasicLastName">
                             <Form.Control className="text-field signup-text-field" type="text" placeholder="Last Name" {...register("lastName")} />
-                        {/* <p className="error">{errors.lastName?.message}</p> */}
                     </Form.Group>
                 </div>
+                {errors.firstName && errors.lastName ? (
+                    <div>
+                        <p className="error">{`First Name and Last Name are required!`}</p>
+                    </div>
+                ) : (
+                <div>
+                    <p className="error">{errors.firstName?.message}</p>
+                    <p className="error">{errors.lastName?.message}</p>
+                </div>
+                )}
 
                 <Form.Group className="mb-3" controlId="formBasicUsername">
                         <Form.Control className="text-field signup-text-field" type="text" placeholder="Username" {...register("uname")}/>
@@ -172,9 +180,3 @@ function SignUpForm() {
 }
 
 export default SignUpForm;
-
-
-
-
-
-

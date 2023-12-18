@@ -4,11 +4,11 @@ import SignUpForm from '../components/SignUpForm';
 import LogoWhite from '../img/logo-white.png';
 
 const SignupContainer = styled.div`
-    height: 100vh;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
+    margin: 30px;
 `
 
 const Logo = styled.img`
@@ -38,7 +38,8 @@ const StyledLink = styled.a`
 
 const Signup = () => {
   return (
-    <div>
+    <div className='signup-background' style={{minHeight: '100vh', height: '100%', display: 'flex', alignIttems: 'center',
+    justifyContent: 'center'}}> 
         <StyledLink href="/">
             <LogoContainer>
                 <Logo src={LogoWhite} alt='logo-white'/>
