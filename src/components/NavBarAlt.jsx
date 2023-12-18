@@ -68,6 +68,12 @@ const CustomDropdownToggle = styled(Dropdown.Toggle)`
     }
 `;
 
+const CustomItem = styled(Dropdown.Item)`
+    &:active {
+        background-color: #DA7422 !important;
+    }
+`
+
 const NavBarAlt = () => {
     const isSmallScreen = useMediaQuery('(max-width: 995px)'); // Change the breakpoint as needed
 
@@ -133,9 +139,9 @@ const NavBarAlt = () => {
                     <Dropdown align="end" show={showNotifications} onClose={() => setShowNotifications(false)}>
                         <CustomDropdownToggle as={CustomBadge} id="notifications-dropdown" />
                         <Dropdown.Menu>
-                        <Dropdown.Item href="#notification1">Notification 1</Dropdown.Item>
-                        <Dropdown.Item href="#notification2">Notification 2</Dropdown.Item>
-                        <Dropdown.Item href="#notification3">Notification 3</Dropdown.Item>
+                        <CustomItem href="#notification1">Notification 1</CustomItem>
+                        <CustomItem href="#notification2">Notification 2</CustomItem>
+                        <CustomItem href="#notification3">Notification 3</CustomItem>
                         </Dropdown.Menu>
                     </Dropdown>
                     <CustomBadge onClick={handleUserOptionToggle} style={{ marginLeft: '10px',}}>
@@ -144,8 +150,8 @@ const NavBarAlt = () => {
                     <Dropdown align="end" show={showUserOption} onClose={() => setShowUserOption(false)}>
                         <CustomDropdownToggle as={CustomBadge} id="user-options-dropdown" />
                         <Dropdown.Menu>
-                        <Dropdown.Item href="/Settings">Settings</Dropdown.Item>
-                        <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
+                        <CustomItem href="/Settings">Settings</CustomItem>
+                        <CustomItem onClick={handleLogout}>Logout</CustomItem>
                         </Dropdown.Menu>
                     </Dropdown>
 
