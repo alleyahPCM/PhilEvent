@@ -1,6 +1,6 @@
 import { Card, Col, Row } from 'react-bootstrap';
 import styled from 'styled-components';
-import { Link } from "react-router-dom"
+import { Link } from "react-router-dom";
 
 const EventLink = styled(Link)`
   text-decoration: none;

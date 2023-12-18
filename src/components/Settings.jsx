@@ -1,8 +1,7 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { Container } from 'react-bootstrap';
+import { useRef, useEffect, useState } from 'react';
+import { Container, Button } from 'react-bootstrap';
 import styled from 'styled-components';
 import TextField from '@mui/material/TextField';
-import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 
 const Title = styled.h2`
@@ -45,6 +44,13 @@ const CancelButton = styled(Button)`
   }
 `;
 
+const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end; /* Aligns the buttons to the right */
+  margin-top: 20px; /* Adjust margin as needed */
+`;
+
+
 const Settings = () => {
   const contentRef = useRef(null);
   const [userInfo, setUserInfo] = useState({
@@ -83,12 +89,14 @@ const Settings = () => {
       // Handle error or show an error message
     }
   };
+  
 
   return (
     <Container>
       <Title>Settings</Title>
-      <div ref={contentRef} style={{ overflow: 'hidden', overflowY: 'scroll', height: 'calc(100vh - 150px)' }}>
-        <div style={{ margin: 20, display: 'flex', flexDirection: 'column', maxWidth: 300 }}>
+      <div ref={contentRef} style={{ overflow: 'hidden', overflowY: 'scroll', height: 'calc(100vh - 150px)', display: 'flex',
+          justifyContent: 'center' }}>
+        <div style={{ margin: 20, display: 'flex', flexDirection: 'column', maxWidth: 700, width: '100%'}}>
           <TextField
             required
             id="outlined-required"
@@ -135,10 +143,10 @@ const Settings = () => {
             defaultValue=""
             style={{ marginBottom: 20 }}
           />
-          <div>
+          <ButtonWrapper>
             <SaveButton onClick={handleSave}>Save</SaveButton>
             <CancelButton variant="secondary">Cancel</CancelButton>
-          </div>
+          </ButtonWrapper>
         </div>
       </div>
     </Container>

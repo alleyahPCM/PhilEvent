@@ -1,12 +1,10 @@
-import { useState } from 'react';
-import { useRef, useEffect }from 'react'
-import { Container } from 'react-bootstrap';
+import { useState, useRef, useEffect }from 'react';
+import { Container, Modal, Button } from 'react-bootstrap';
 import styled from 'styled-components';
 
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import { Modal, Button } from 'react-bootstrap';
 
 const Title = styled.h2`
   font-weight: bold;

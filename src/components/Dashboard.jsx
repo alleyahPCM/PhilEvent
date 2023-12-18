@@ -1,4 +1,4 @@
-import { useRef, useEffect }from 'react'
+import { useRef, useEffect }from 'react';
 import { Container } from 'react-bootstrap';
 import styled from 'styled-components';
 import { sample } from '../data';

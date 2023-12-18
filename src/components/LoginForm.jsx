@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 import google from "../img/google.svg";
 import facebook from "../img/facebook.svg";
 import twitter from "../img/twitter.svg";
 
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
-
+import {Form, Button} from 'react-bootstrap';
 import { loginSchema } from "../validations/UserValidation";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";

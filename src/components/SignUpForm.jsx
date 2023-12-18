@@ -1,13 +1,11 @@
-import React, { useState, useEffect} from "react";
+import { useState, useEffect} from "react";
 import axios from "axios";
 
 import google from "../img/google.svg";
 import facebook from "../img/facebook.svg";
 import twitter from "../img/twitter.svg";
 
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
-import Toast from 'react-bootstrap/Toast';
+import { Button, Form, Toast} from 'react-bootstrap';
 
 import { signupSchema } from "../validations/UserValidation";
 import { useForm } from "react-hook-form";

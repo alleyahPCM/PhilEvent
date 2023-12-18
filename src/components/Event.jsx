@@ -3,7 +3,7 @@ import { Button, Card } from 'react-bootstrap';
 
 import { BiCalendarPlus } from 'react-icons/bi';
 import { AiFillHeart } from 'react-icons/ai';
-import { Link } from "react-router-dom"
+import { Link } from "react-router-dom";
 
 
 const EventContainer = styled.div`

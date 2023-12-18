@@ -11,6 +11,7 @@ import UserSettings from './pages/UserSettings';
 import Signup from './pages/Signup';
 import Login from './pages/Login';
 import Event from './pages/Event';
+import Places from './pages/Places';
 
 function App() {
   const location = useLocation();
@@ -36,6 +37,7 @@ function App() {
     <div className={`App d-flex flex-column ${backgroundClass}`}>
       <Routes>
         <Route path="/" element={<Home/>}/>
+        <Route path="/Places" element={<Places/>}/>
         <Route path="/Login" element={<Login/>}/>
         <Route path="/Signup" element={<Signup/>}/>
         <Route path="/UserHome" element={<UserHome/>}/>

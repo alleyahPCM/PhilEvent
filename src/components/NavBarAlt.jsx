@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { Container, Nav, Navbar, Form, Dropdown } from 'react-bootstrap';
 import styled from 'styled-components';
-import { NotificationsOutlined, Search } from '@mui/icons-material';
+import { AccountCircle, NotificationsOutlined, Search } from '@mui/icons-material';
 import LogoGreen from '../img/logo-green.png';
 import Badge from '@mui/material/Badge';
 import { useMediaQuery } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const LogoText = styled.h2`
     font-weight: bold;
@@ -70,10 +72,26 @@ const NavBarAlt = () => {
     const isSmallScreen = useMediaQuery('(max-width: 995px)'); // Change the breakpoint as needed
 
     const [showNotifications, setShowNotifications] = useState(false);
+    const [showUserOption, setShowUserOption] = useState(false);
 
     const handleNotificationsToggle = () => {
       setShowNotifications(!showNotifications);
     };
+
+    const handleUserOptionToggle = () => {
+        setShowUserOption(!showUserOption);
+    };
+
+    const navigate = useNavigate()
+    const handleLogout = async () => {
+        try {
+            await axios.get("http://localhost:8080/logout");
+            navigate("/")
+        } catch (error) {
+            console.error("Logout failed:", error.response.data.message);
+        }
+    };
+
 
   return (
     <Navbar collapseOnSelect expand="lg" style={{ backgroundColor: 'white', borderBottom: '1px solid #ced4da' }}>
@@ -87,7 +105,7 @@ const NavBarAlt = () => {
                 <Nav className="me-auto">
                     <Nav.Link href="/UserHome"><Link>Home</Link></Nav.Link>
                     <Nav.Link href="#events"><Link>Events</Link></Nav.Link>
-                    <Nav.Link href="#places"><Link>Places</Link></Nav.Link>
+                    <Nav.Link href="/Places"><Link>Places</Link></Nav.Link>
                 </Nav>
                 <Form className="d-flex">
                     <SearchContainer>
@@ -102,7 +120,11 @@ const NavBarAlt = () => {
                 </Form>
                 <Nav>
                 {isSmallScreen ? (
+                    <>
                     <Nav.Link href="#notifications"><Link>Notifications</Link></Nav.Link>
+                    <Nav.Link href="/Settings"><Link>Settings</Link></Nav.Link>
+                    <Nav.Link onClick={handleLogout}><Link>Logout</Link></Nav.Link>
+                    </>
                 ) : (
                     <>
                     <CustomBadge badgeContent={4} onClick={handleNotificationsToggle}>
@@ -116,6 +138,18 @@ const NavBarAlt = () => {
                         <Dropdown.Item href="#notification3">Notification 3</Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>
+                    <CustomBadge onClick={handleUserOptionToggle} style={{ marginLeft: '10px',}}>
+                        <AccountCircle color="action"/>
+                    </CustomBadge>
+                    <Dropdown align="end" show={showUserOption} onClose={() => setShowUserOption(false)}>
+                        <CustomDropdownToggle as={CustomBadge} id="user-options-dropdown" />
+                        <Dropdown.Menu>
+                        <Dropdown.Item href="/Settings">Settings</Dropdown.Item>
+                        <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
+
+                    
                     </>
                 )}
                 </Nav>
