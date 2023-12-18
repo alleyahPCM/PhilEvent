@@ -83,7 +83,7 @@ const Event = ({item}) => {
               </CardButton>
             </CardSection>
             <Card.Body>
-                <EventLink to={`/Event/${item.title}/${item.id}`}>
+                <EventLink to={`/Event/${item.id}`}>
                   <Card.Title style={{fontSize: 20, fontWeight: 'bold'}}>{Title}</Card.Title>
                 </EventLink>
                 <Card.Text id='cardContent' style={{fontSize: 16}}>

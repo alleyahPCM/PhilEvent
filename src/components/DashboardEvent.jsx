@@ -25,7 +25,7 @@ const DashboardEvent = ({item}) => {
         </Col>
         <Col md={10}>
           <Card.Body>
-            <EventLink to={`/Event/${item.title}/${item.id}`}>
+            <EventLink to={`/Event/${item.id}`}>
                   <Card.Title style={{fontWeight: 'bold'}}>{item.title}</Card.Title>
             </EventLink>
             <Card.Text>
