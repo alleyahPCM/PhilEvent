@@ -4,15 +4,18 @@ import { Button, Card } from 'react-bootstrap';
 import { BiCalendarPlus } from 'react-icons/bi';
 import { AiFillHeart } from 'react-icons/ai';
 import { Link } from "react-router-dom";
-
+import React, { useRef, useEffect, useState } from 'react';
 
 const EventContainer = styled.div`
   margin: 10px;
-`
+`;
+
 const EventCard = styled(Card)`
   width: 18rem;
-  height: 300px;
-`
+  max-width: 100%; /* Ensures the card doesn't exceed its container */
+  height: 310px;
+`;
+
 const EventImg = styled.img`
   width: 100%;
   height: 150px;
@@ -67,8 +70,32 @@ const EventLink = styled(Link)`
   }
 `
 
+const CardTitle = styled(Card.Title)`
+  font-size: 20px;
+  font-weight: bold;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* Set maximum number of lines to 2 */
+  -webkit-line-clamp: 2;
+  /* Ensure the ellipsis shows up properly */
+  -webkit-box-decoration-break: clone;
+  /* Optional: Adjust the line height for better appearance */
+  line-height: 1.4;
+`;
+
 const Event = ({item}) => {
-  const Title = (item.title).length > 30 ? (item.title).slice(0, 30) + '...' : (item.title);
+  const titleRef = useRef(null);
+  const [isOverflowing, setIsOverflowing] = useState(false);
+
+  useEffect(() => {
+    if (titleRef.current) {
+      setIsOverflowing(titleRef.current.scrollHeight > titleRef.current.clientHeight);
+    }
+  }, [item.title]);
+
+
 
   return (
     <EventContainer>
@@ -84,8 +111,8 @@ const Event = ({item}) => {
             </CardSection>
             <Card.Body>
                 <EventLink to={`/Event/${item.id}`}>
-                  <Card.Title style={{fontSize: 20, fontWeight: 'bold'}}>{Title}</Card.Title>
-                </EventLink>
+                <CardTitle ref={titleRef}>{item.title}</CardTitle>
+              </EventLink>
                 <Card.Text id='cardContent' style={{fontSize: 16}}>
                     <span>{item.date}</span><span> | </span>
                     <span>{item.time}</span> <br/>
