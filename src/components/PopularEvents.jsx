@@ -124,13 +124,11 @@ const PopularEvents = () => {
         const currentDay = today.getDay(); // Sunday: 0, Monday: 1, ..., Saturday: 6
         
         const startOfWeek = new Date(today);
-        startOfWeek.setDate(today.getDate() - currentDay); // Go back to the start of the current week (Sunday)
+        startOfWeek.setDate((today.getDate() - currentDay) + 1); // Go back to the start of the current week (Sunday)
         
         const endOfWeek = new Date(today);
-        endOfWeek.setDate(today.getDate() + (6 - currentDay)); // Move to the end of the current week (Saturday)
+        endOfWeek.setDate(today.getDate() + (6 - currentDay) + 1); // Move to the end of the current week (Saturday)
         
-        // Adjust the end of the week to include events happening on Saturday by adding a day
-        endOfWeek.setDate(endOfWeek.getDate() + 1);
         const formattedStartOfWeek = startOfWeek.toISOString().split('T')[0];
         const formattedAdjustedEndOfWeek = endOfWeek.toISOString().split('T')[0];
         
