@@ -12,6 +12,6 @@ export const signupSchema = yup.object().shape({
 
 export const loginSchema = yup.object().shape({
     emailOrUname: yup.string().required('This field is required.').matches(/^(?:\w+@\w+\.\w+|\w{3,})$/,'Please enter a valid email or username.'),
-    cpassword: yup.string().min(8, "This field is required.").required().matches(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)[A-Za-z\d]{8,}$/),
+    cpassword: yup.string().required('This field is required.'),
     remember: yup.boolean()
 })

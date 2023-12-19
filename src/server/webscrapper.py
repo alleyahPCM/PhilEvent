@@ -54,11 +54,9 @@ def store():
                     date = date_object.strftime("%Y-%m-%d")
                     time_object = datetime.strptime(time, "%I:%M %p")
                     time = time_object.strftime("%H:%M:%S")
-
-                    result_string = f"{name},{date},{time}"
-                    hash = hashlib.sha256(result_string.encode()).hexdigest()
-                    data = (name,c,ven,date,time,price,desc,link,img,hash)
-                    insert_query = "INSERT IGNORE INTO events (title, city, address, date, time, ticket_price, description, link, image, hash) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                    
+                    data = (name,c,ven,date,time,price,desc,link,img)
+                    insert_query = "INSERT IGNORE INTO events (title, city, address, date, time, ticket_price, description, link, image) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
                     cursor.execute(insert_query, data)
                     connection.commit()
                     # print("Upcoming event added successfully")

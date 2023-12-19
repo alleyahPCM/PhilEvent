@@ -54,12 +54,14 @@ const ButtonWrapper = styled.div`
 const Settings = () => {
   const contentRef = useRef(null);
   const [userInfo, setUserInfo] = useState({
-    firstName:"",
+    firstName: "",
     lastName: "",
-    username:"",
-    email:""
+    username: "",
+    email: "",
+    pass: "",
+    confpass: ""
   });
-  
+
   useEffect(() => {
     axios.get("http://localhost:8080/fetch-user-info")
       .then(res => {
@@ -68,7 +70,7 @@ const Settings = () => {
       })
       .catch(err => console.log(err))
     console.log(userInfo)
-  }, [userInfo])
+  }, [])
 
   useEffect(() => {
     const content = contentRef.current;
@@ -81,22 +83,26 @@ const Settings = () => {
 
   const handleSave = async () => {
     try {
-      const response = await axios.post('http://localhost:8080/update-user-info', userInfo);
-      console.log(response.data);
+      if (userInfo.confpass === userInfo.confpass) {
+        const response = await axios.put('http://localhost:8080/update-user-info', userInfo);
+        console.log(response.data);
+      }
       // Handle success or show a success message
     } catch (error) {
       console.error('Error updating user information:', error);
       // Handle error or show an error message
     }
   };
-  
+
 
   return (
     <Container>
       <Title>Settings</Title>
-      <div ref={contentRef} style={{ overflow: 'hidden', overflowY: 'scroll', height: 'calc(100vh - 150px)', display: 'flex',
-          justifyContent: 'center' }}>
-        <div style={{ margin: 20, display: 'flex', flexDirection: 'column', maxWidth: 700, width: '100%'}}>
+      <div ref={contentRef} style={{
+        overflow: 'hidden', overflowY: 'scroll', height: 'calc(100vh - 150px)', display: 'flex',
+        justifyContent: 'center'
+      }}>
+        <div style={{ margin: 20, display: 'flex', flexDirection: 'column', maxWidth: 700, width: '100%' }}>
           <TextField
             required
             id="outlined-required"
@@ -134,6 +140,7 @@ const Settings = () => {
             id="outlined-required"
             label="Change Password"
             defaultValue=""
+            onChange={(e) => setUserInfo({ ...userInfo, pass: e.target.value })}
             style={{ marginBottom: 20 }}
           />
           <TextField
@@ -141,6 +148,7 @@ const Settings = () => {
             id="outlined-required"
             label="Confirm Password"
             defaultValue=""
+            onChange={(e) => setUserInfo({ ...userInfo, confpass: e.target.value })}
             style={{ marginBottom: 20 }}
           />
           <ButtonWrapper>

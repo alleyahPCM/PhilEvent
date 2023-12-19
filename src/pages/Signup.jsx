@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import SignUpForm from '../components/SignUpForm';
 import LogoWhite from '../img/logo-white.png';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const SignupContainer = styled.div`
     width: 100%;
@@ -37,6 +39,17 @@ const StyledLink = styled.a`
 `;
 
 const Signup = () => {
+  const navigate = useNavigate();
+  useEffect(() => {
+    axios.get("http://localhost:8080/")
+      .then(res => {
+        if (res.data.valid) {
+          navigate("/UserHome")
+        }
+      })
+      .catch(err => console.log(err))
+  }, [navigate])
+  
   return (
     <div className='signup-background' style={{minHeight: '100vh', height: '100%', display: 'flex', alignIttems: 'center',
     justifyContent: 'center'}}> 

@@ -1,4 +1,4 @@
-import { useState, useEffect} from "react";
+import { useState } from "react";
 import axios from "axios";
 
 import google from "../img/google.svg";
@@ -20,20 +20,8 @@ function SignUpForm() {
         resolver: yupResolver(signupSchema),
     });
 
-    useEffect(() => {
-        axios.get("http://localhost:8080/")
-            .then(res => {
-                console.log(res)
-                if (res.data.valid) {
-                    navigate("/UserHome")
-                }
-            })
-            .catch(err => console.log(err))
-    }, [navigate])
-
     const onSubmit = async (data) => {
         const { terms, confirmPassword, ...formData } = data;
-        console.log(formData);
         try {
             await axios.post("http://localhost:8080/signup", formData);
             navigate("/UserHome")

@@ -1,9 +1,9 @@
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { Container } from 'react-bootstrap';
 import styled from 'styled-components';
+import axios from 'axios';
 
-import { popularEvents } from '../data';
-import Event from './Event';
+import Event from './Event-User';
 
 const Title = styled.h2`
   font-weight: bold;
@@ -18,6 +18,7 @@ const EventsContainer = styled.div`
 `
 
 const MyEvents = () => {
+  const [userEvents, setUserEvents] = useState([]);
   const contentRef = useRef(null);
 
   useEffect(() => {
@@ -29,16 +30,29 @@ const MyEvents = () => {
     }
   }, []);
 
+  useEffect(() => {
+    axios.get("http://localhost:8080/userevents")
+      .then(res => {
+        setUserEvents(res.data)
+      })
+      .catch(err => console.log(err))
+  }, []);
+
+  const removeEvent = (eventId) => {
+    const updatedUserEvents = userEvents.filter((event) => event.id !== eventId);
+    setUserEvents(updatedUserEvents);
+  };
+
   return (
     <Container>
-        <Title>My Events</Title>
-        <div ref={contentRef} style={{overflow: 'hidden', overflowY: 'scroll', height: 'calc(100vh - 150px)'}}>
-          <EventsContainer>
-            {popularEvents.map((item) => (
-              <Event item={item} key={item.id}/>
-            ))}
-          </EventsContainer>
-        </div>
+      <Title>My Saved Events</Title>
+      <div ref={contentRef} style={{ overflow: 'hidden', overflowY: 'scroll', height: 'calc(100vh - 150px)' }}>
+        <EventsContainer>
+          {userEvents.map((item) => (
+            <Event item={item} key={item.id} onRemove={removeEvent} />
+          ))}
+        </EventsContainer>
+      </div>
     </Container>
   )
 }

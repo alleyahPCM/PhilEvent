@@ -92,7 +92,7 @@ const NavBarAlt = () => {
     const handleLogout = async () => {
         try {
             await axios.get("http://localhost:8080/logout");
-            navigate("/")
+            window.location.pathname === "/" ? window.location.reload() : navigate("/");
         } catch (error) {
             console.error("Logout failed:", error.response.data.message);
         }

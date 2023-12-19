@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
+import axios from 'axios';
 
 const Title = styled.h2`
   font-weight: bold;
@@ -32,6 +33,7 @@ const events = [
 
 const EventCalendar = () => {
   const contentRef = useRef(null);
+  const [userEvents, setUserEvents] = useState([]);
 
   useEffect(() => {
     const content = contentRef.current;
@@ -40,6 +42,14 @@ const EventCalendar = () => {
     } else {
       content.style.overflowY = 'scroll';
     }
+  }, []);
+
+  useEffect(() => {
+    axios.get("http://localhost:8080/usercalendar")
+      .then(res => {
+        setUserEvents(res.data)
+      })
+      .catch(err => console.log(err))
   }, []);
 
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -59,7 +69,7 @@ const EventCalendar = () => {
           <div style={{ height: '800px', padding: '20px' }}>
             <Calendar
               localizer={localizer}
-              events={events}
+            events={userEvents}
               startAccessor="start"
               endAccessor="end"
               views={['month']}

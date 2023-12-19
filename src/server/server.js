@@ -5,7 +5,7 @@ const bcrypt = require("bcryptjs");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
-const { exec } = require("child_process");
+const { spawn } = require("child_process");
 
 function formatToMonthDayYear(dateTimeString) {
   const options = { year: "numeric", month: "long", day: "numeric" };
@@ -22,16 +22,16 @@ function formatToTimeAMPM(timeString) {
   });
 }
 
-const app = express()
+const app = express();
 app.use(express.json());
 app.use(
   cors({
     origin: ["http://localhost:3000"],
-    methods: ["POST", "GET"],
-    credentials: true
+    methods: ["POST", "GET", "PUT", "DELETE"],
+    credentials: true,
   })
 );
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(
   session({
@@ -46,33 +46,51 @@ app.use(
 );
 
 const db = mysql.createConnection({
-    host:"localhost",
-    user:"root",
-    password: "",
-    database: "philevent"
-})
+  host: "localhost",
+  user: "root",
+  password: "",
+  database: "philevent",
+});
 
-app.listen(8080, ()=>{
-    console.log("Connected!");
-    // const pythonScript = "python src/server/webscrapper.py";
+function runPythonScript() {
+  const pythonScript = "python";
+  const scriptArgs = ["src/server/webscrapper.py"];
 
-    // exec(pythonScript, (error, stdout, stderr) => {
-    //   if (error) {
-    //     console.error(`Error executing Python script: ${error}`);
-    //     return;
-    //   }
+  const pythonProcess = spawn(pythonScript, scriptArgs);
 
-    //   console.log(`Python script output: ${stdout}`);
-    // });
-})
+  pythonProcess.stdout.on("data", (data) => {
+    console.log(`Python script output: ${data}`);
+  });
 
-app.get("/", (req,res) => {
+  pythonProcess.stderr.on("data", (data) => {
+    console.error(`Python script error: ${data}`);
+  });
+
+  pythonProcess.on("close", (code) => {
+    if (code === 0) {
+      console.log("Python script execution successful");
+    } else {
+      console.error(`Python script execution failed with code ${code}`);
+    }
+  });
+
+  pythonProcess.on("error", (error) => {
+    console.error(`Error executing Python script: ${error.message}`);
+  });
+}
+
+app.listen(8080, () => {
+  console.log("Connected!");
+  runPythonScript();
+});
+
+app.get("/", (req, res) => {
   if (req.session.email) {
-      return res.json({ valid: true, name: req.session.firstName});
+    return res.json({ valid: true, name: req.session.username });
   } else {
-      return res.json({ valid: false});
+    return res.json({ valid: false });
   }
-})
+});
 
 app.get("/allevents", (req, res) => {
   let q = "SELECT * FROM events";
@@ -89,7 +107,7 @@ app.get("/allevents", (req, res) => {
   }
 
   if (filters.length > 0) {
-    q += ` WHERE ${filters.join(' AND ')}`;
+    q += ` WHERE ${filters.join(" AND ")}`;
   }
 
   db.query(q, (err, data) => {
@@ -106,6 +124,50 @@ app.get("/allevents", (req, res) => {
       city: event.city.charAt(0).toUpperCase() + event.city.slice(1),
       price: event.ticket_price,
       link: event.link,
+    }));
+
+    return res.json(formattedEvents);
+  });
+});
+
+app.get("/userevents", (req, res) => {
+  const q = `SELECT e.*, u.event_id FROM user_events u, events e WHERE e.id = u.event_id AND u.username = '${req.session.username}'`;
+
+  db.query(q, (err, data) => {
+    if (err) {
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+
+    const formattedEvents = data.map((event) => ({
+      id: event.id,
+      img: event.image,
+      title: event.title,
+      date: formatToMonthDayYear(event.date),
+      time: formatToTimeAMPM(event.time),
+      city: event.city.charAt(0).toUpperCase() + event.city.slice(1),
+      price: event.ticket_price,
+      link: event.link,
+    }));
+
+    return res.json(formattedEvents);
+  });
+});
+
+app.get("/usercalendar", (req, res) => {
+  const q = `SELECT e.*, u.event_id FROM user_events u, events e WHERE e.id = u.event_id AND u.username = '${req.session.username}'`;
+
+  db.query(q, (err, data) => {
+    if (err) {
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+
+    const formattedEvents = data.map((event) => ({
+      title: event.title,
+      start: new Date(event.date),
+      end: new Date(event.date),
+      description: `${event.title} on ${formatToMonthDayYear(
+        event.date
+      )} | ${formatToTimeAMPM(event.time)} - ${event.city}`,
     }));
 
     return res.json(formattedEvents);
@@ -146,6 +208,59 @@ app.get("/events/:id", (req, res) => {
   });
 });
 
+app.post("/addevent/:id", (req, res) => {
+  // Extract parameters from the request
+  const eventId = req.params.id;
+  const username = req.session.username;
+
+  // Check if the event already exists for this user
+  const selectQuery =
+    "SELECT * FROM user_events WHERE event_id = ? AND username = ?";
+  const selectValues = [eventId, username];
+
+  db.query(selectQuery, selectValues, (selectErr, selectData) => {
+    if (selectErr) {
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+
+    if (selectData.length > 0) {
+      // Event already exists for this user
+      return res.json({
+        success: false,
+        message: "Event is already saved!",
+      });
+    }
+
+    // If the event does not exist, insert it
+    const insertQuery =
+      "INSERT INTO user_events (`event_id`, `username`) VALUES (?, ?)";
+    const insertValues = [eventId, username];
+
+    db.query(insertQuery, insertValues, (insertErr, insertData) => {
+      if (insertErr) {
+        return res.status(500).json({ error: "Internal Server Error" });
+      }
+
+      return res.json({ success: true, message: "Event Added!" });
+    });
+  });
+});
+
+app.delete("/removeevent/:id", (req, res) => {
+  const eventId = req.params.id;
+  const username = req.session.username;
+  const deleteQuery =
+    "DELETE FROM user_events WHERE event_id = ? AND username = ?";
+  const values = [eventId, username];
+  db.query(deleteQuery, values, (insertErr, insertData) => {
+    if (insertErr) {
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+
+    return res.json({ success: true, message: "Successfully removed from your saved events!" });
+  });
+});
+
 app.get("/logout", (req, res) => {
   req.session.destroy((err) => {
     if (err) {
@@ -160,36 +275,39 @@ app.get("/logout", (req, res) => {
 });
 
 app.post("/signup", (req, res) => {
-    const checkQuery = "SELECT * FROM accounts WHERE username = ? OR email = ?";
-    const checkValues = [req.body.uname, req.body.email];
+  const checkQuery = "SELECT * FROM accounts WHERE username = ? OR email = ?";
+  const checkValues = [req.body.uname, req.body.email];
 
-    db.query(checkQuery, checkValues, async (checkErr, checkData) => {
-        if (checkErr) {
-            return res.status(500).json({ error: "Internal Server Error" });
-        }
+  db.query(checkQuery, checkValues, async (checkErr, checkData) => {
+    if (checkErr) {
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
 
-        if (checkData && checkData.length > 0) {
-            return res.status(400).json({ error: "Username or email already exists" });
-        }
-        const password = await bcrypt.hash(req.body.password , 10);
-        const insertQuery = "INSERT INTO accounts (`firstname`, `lastname`, `email`, `username`, `password`) VALUES (?)";
-        const insertValues = [
-            req.body.firstName,
-            req.body.lastName,
-            req.body.email,
-            req.body.uname,
-            password
-        ];
+    if (checkData && checkData.length > 0) {
+      return res
+        .status(400)
+        .json({ error: "Username or email already exists" });
+    }
+    const password = await bcrypt.hash(req.body.password, 10);
+    const insertQuery =
+      "INSERT INTO accounts (`firstname`, `lastname`, `email`, `username`, `password`) VALUES (?)";
+    const insertValues = [
+      req.body.firstName,
+      req.body.lastName,
+      req.body.email,
+      req.body.uname,
+      password,
+    ];
 
-        db.query(insertQuery, [insertValues], (insertErr, insertData) => {
-            if (insertErr) {
-                return res.status(500).json({ error: "Internal Server Error" });
-            }
-            req.session.email = req.body.email;
-            req.session.firstName = req.body.firstName;
-            return res.json({ message: "Signup Complete!" });
-        });
+    db.query(insertQuery, [insertValues], (insertErr, insertData) => {
+      if (insertErr) {
+        return res.status(500).json({ error: "Internal Server Error" });
+      }
+      req.session.email = req.body.email;
+      req.session.username = req.body.username;
+      return res.json({ message: "Signup Complete!" });
     });
+  });
 });
 
 app.post("/login", (req, res) => {
@@ -209,17 +327,23 @@ app.post("/login", (req, res) => {
 
         if (match) {
           req.session.email = selectData[0].email;
-          req.session.firstName = selectData[0].firstname;
+          req.session.username = selectData[0].username;
           return res.json({
             success: true,
             message: "Login successful",
             name: req.session,
           });
         } else {
-          return res.status(401).json({ error: "Invalid password" });
+          return res.json({
+            success: false,
+            message: "Invalid Password!",
+          });
         }
       } else {
-        return res.status(401).json({ error: "Invalid email" });
+        return res.json({
+          success: false,
+          message: "User not Found!",
+        });
       }
     }
   );
@@ -251,14 +375,14 @@ app.get("/fetch-user-info", (req, res) => {
   }
 });
 
-app.post("/update-user-info", (req, res) => {
+app.put("/update-user-info", (req, res) => {
   if (req.session.email) {
-    const { firstName, lastName, username, email, newPassword } = req.body;
+    const { firstName, lastName, username, email, newPassword} = req.body;
 
     const checkQuery =
       "SELECT * FROM accounts WHERE (username = ? OR email = ?) AND email != ?";
     const checkValues = [username, email, req.session.email];
-
+    
     db.query(checkQuery, checkValues, async (checkErr, checkData) => {
       if (checkErr) {
         return res.status(500).json({ error: "Internal Server Error" });
@@ -269,14 +393,15 @@ app.post("/update-user-info", (req, res) => {
           .status(400)
           .json({ error: "Email or username already exists for another user" });
       }
-
+      const pass = await bcrypt.hash(newPassword, 10);
+      console.log(pass)
       const updateQuery =
         "UPDATE accounts SET firstname=?, lastname=?, username=?, password=? WHERE email=?";
       const updateValues = [
         firstName,
         lastName,
         username,
-        newPassword,
+        pass,
         req.session.email,
       ];
 

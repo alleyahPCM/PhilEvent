@@ -13,36 +13,13 @@ const EventContainer = styled.div`
 
 const EventCard = styled(Card)`
   width: 18rem;
-  height: 300px;
+  height: 315px;
 `;
 
 const EventImg = styled.img`
   width: 100%;
   height: 150px;
   object-fit: cover;
-`;
-
-const CardButton = styled(Button)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px;
-  border-radius: 50%;
-  margin-right: 5px;
-  background-color: white;
-  border: none;
-  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.2);
-  color: black;
-
-  &:hover, &:focus {
-    background-color: #DA7422;
-    color: white !important;
-  }
-
-  &:active {
-    background-color: #D06023  !important;
-    color: white !important;
-  }
 `;
 
 const CardTitle = styled(Card.Title)`
@@ -60,23 +37,6 @@ const CardTitle = styled(Card.Title)`
   line-height: 1.4;
 `;
 
-const StyledBiCalendarPlus = styled(BiCalendarPlus)`
-  font-size: 24px;
-`;
-
-const StyledAiFillHeart = styled(AiFillHeart)`
-  font-size: 24px;
-`;
-
-const CardSection = styled.div`
-  position: relative;
-  display: inline-flex;
-  margin-left: auto;
-  z-index: 1;
-  margin-top: -25px;
-  margin-bottom: -20px;
-`;
-
 const EventLink = styled(Link)`
   text-decoration: none;
   color: #DA7422;
@@ -86,7 +46,7 @@ const EventLink = styled(Link)`
   }
 `;
 
-const Event = ({ item }) => {
+const Event = ({ item, onRemove }) => {
   const titleRef = useRef(null);
   const [isOverflowing, setIsOverflowing] = useState(false);
   const [status, setStatus] = useState(false);
@@ -109,37 +69,25 @@ const Event = ({ item }) => {
 
   const confirmModal = async () => {
     try {
-      const response = await axios.post("http://localhost:8080/addevent/" + item.id)
+      console.log(item.id)
+      const response = await axios.delete("http://localhost:8080/removeevent/"+item.id)
       setStatus(response.data.success)
       setMessage(response.data.message)
       toast()
+      if (response.data.success) {
+        onRemove(item.id);
+      }
     } catch (error) {
-      console.error("Insert failed:", error.response.data.error);
+      console.error("Remove failed:", error.response.data.error);
     }
 
     setShowConfirmationModal(false);
   };
 
-  const navigate = useNavigate();
-  const handleConfirmation = async () => {
-    try {
-      const response = await axios.get("http://localhost:8080/")
-      console.log(response)
-      response.data.valid ? setShowConfirmationModal(true) : navigate("/login");
-    } catch (error) {
-      console.error(error.response.data.error);
-    }
-  }
-
   return (
     <EventContainer>
       <EventCard>
         <EventImg src={item.img} id='cardImg' alt='Event' />
-        <CardSection>
-          <CardButton onClick={handleConfirmation}>
-            <StyledBiCalendarPlus />
-          </CardButton>
-        </CardSection>
         <Card.Body>
           <EventLink to={`/Event/${item.id}`}>
             <CardTitle ref={titleRef}>{item.title}</CardTitle>
@@ -148,7 +96,7 @@ const Event = ({ item }) => {
             <span>{item.date}</span><span> | </span>
             <span>{item.time}</span> <br />
             <span>{item.city}</span> <br />
-            <span style={{ color: '#DA7422' }}>{item.price}</span>
+            <a onClick={() => setShowConfirmationModal(true)} style={{ textAlign: "right", display: "block", color: "red", cursor: "pointer" }}>Remove</a>
           </Card.Text>
         </Card.Body>
       </EventCard>
@@ -177,7 +125,7 @@ const Event = ({ item }) => {
           <Modal.Title>Confirm Action</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          Are you sure you want to add this event? <br />
+          Are you sure you want to remove this event? <br/>
           <Card.Title style={{ fontSize: 20, fontWeight: 'bold' }}>{item.title}</Card.Title> on <span>{item.date}</span><span> | </span>
           <span>{item.time}</span> - <span>{item.city}</span> <br />
         </Modal.Body>

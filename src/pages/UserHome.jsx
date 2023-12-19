@@ -12,7 +12,6 @@ const UserHome = () => {
   useEffect(() => {
     axios.get("http://localhost:8080/")
       .then(res => {
-        console.log(res)
         if (!res.data.valid) {
           navigate("/Login")
         }
