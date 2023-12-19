@@ -130,6 +130,52 @@ app.get("/allevents", (req, res) => {
   });
 });
 
+app.get("/", (req, res) => {
+  if (req.session.email) {
+    return res.json({ valid: true, name: req.session.username });
+  } else {
+    return res.json({ valid: false });
+  }
+});
+
+app.get("/userweek", (req, res) => {
+  const { startDate, endDate } = req.query;
+  const username = req.session.username;
+
+  let q = `SELECT e.*, u.event_id FROM user_events u
+           JOIN events e ON e.id = u.event_id
+           WHERE u.username = ?`;
+
+  const queryParams = [username];
+
+  if (startDate && endDate) {
+    q += ` AND e.date BETWEEN ? AND ?`;
+    // Convert the dates to the format 'YYYY-MM-DD' for the SQL query
+    const formattedStartDate = new Date(startDate).toISOString().split('T')[0];
+    const formattedEndDate = new Date(endDate).toISOString().split('T')[0];
+
+    queryParams.push(formattedStartDate, formattedEndDate);
+  }
+
+  db.query(q, queryParams, (err, data) => {
+    if (err) {
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+
+    const formattedEvents = data.map((event) => ({
+      id: event.id,
+      img: event.image,
+      title: event.title,
+      date: formatToMonthDayYear(event.date),
+      address: event.address,
+      time: formatToTimeAMPM(event.time),
+    }));
+
+    return res.json(formattedEvents);
+  });
+});
+
+
 app.get("/userevents", (req, res) => {
   const q = `SELECT e.*, u.event_id FROM user_events u, events e WHERE e.id = u.event_id AND u.username = '${req.session.username}'`;
 

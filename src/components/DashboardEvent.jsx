@@ -11,6 +11,19 @@ const EventLink = styled(Link)`
   }
 `
 
+const CardTitle = styled(Card.Title)`
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 1;
+  /* Ensure the ellipsis shows up properly */
+  -webkit-box-decoration-break: clone;
+  /* Optional: Adjust the line height for better appearance */
+  line-height: 1.4;
+  font-weight: bold;
+`;
+
 const DashboardEvent = ({item}) => {
   return (
     <Card style={{ width: '100%', marginBottom: '10px' }}>
@@ -26,7 +39,7 @@ const DashboardEvent = ({item}) => {
         <Col md={10}>
           <Card.Body>
             <EventLink to={`/Event/${item.id}`}>
-                  <Card.Title style={{fontWeight: 'bold'}}>{item.title}</Card.Title>
+                  <CardTitle>{item.title}</CardTitle>
             </EventLink>
             <Card.Text>
                 <span>{item.address}</span><span> | </span>
