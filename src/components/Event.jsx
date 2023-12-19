@@ -68,7 +68,7 @@ const EventLink = styled(Link)`
 `
 
 const Event = ({item}) => {
-  const Title = (item.title).length > 45 ? (item.title).slice(0, 45) + '...' : (item.title);
+  const Title = (item.title).length > 30 ? (item.title).slice(0, 30) + '...' : (item.title);
 
   return (
     <EventContainer>
