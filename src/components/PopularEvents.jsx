@@ -122,16 +122,20 @@ const PopularEvents = () => {
       } else if (selectedDate === 'This Week') {
         const today = new Date();
         const currentDay = today.getDay(); // Sunday: 0, Monday: 1, ..., Saturday: 6
-        const startOfWeek = new Date(today); // Copy current date
+        
+        const startOfWeek = new Date(today);
         startOfWeek.setDate(today.getDate() - currentDay); // Go back to the start of the current week (Sunday)
-      
-        const endOfWeek = new Date(today); // Copy current date
+        
+        const endOfWeek = new Date(today);
         endOfWeek.setDate(today.getDate() + (6 - currentDay)); // Move to the end of the current week (Saturday)
-      
+        
+        // Adjust the end of the week to include events happening on Saturday by adding a day
+        endOfWeek.setDate(endOfWeek.getDate() + 1);
         const formattedStartOfWeek = startOfWeek.toISOString().split('T')[0];
-        const formattedEndOfWeek = endOfWeek.toISOString().split('T')[0];
-      
-        url += `&startDate=${formattedStartOfWeek}&endDate=${formattedEndOfWeek}`;
+        const formattedAdjustedEndOfWeek = endOfWeek.toISOString().split('T')[0];
+        
+        // Use the adjusted end date for filtering events up to the end of Saturday
+        url += `&startDate=${formattedStartOfWeek}&endDate=${formattedAdjustedEndOfWeek}`;      
       } else if (selectedDate === 'This Month') {
         const today = new Date();
         const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1); // Start of current month

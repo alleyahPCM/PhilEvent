@@ -25,7 +25,7 @@ const Dashboard = () => {
         startOfWeek.setDate(today.getDate() - currentDay);
 
         const endOfWeek = new Date(today);
-        endOfWeek.setDate(today.getDate() + (6 - currentDay));
+        endOfWeek.setDate(today.getDate() + (6 - currentDay) + 1); // Adjusted to include events up to the end of Saturday
 
         const formattedStartOfWeek = startOfWeek.toISOString().split('T')[0];
         const formattedEndOfWeek = endOfWeek.toISOString().split('T')[0];
