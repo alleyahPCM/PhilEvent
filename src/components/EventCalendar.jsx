@@ -13,23 +13,25 @@ const Title = styled.h2`
   margin: 10px;
 `
 
-const localizer = momentLocalizer(moment);
+const CloseButton = styled(Button)`
+  width: 70px;
+  border-radius: 45px;
+  background-color: #ced4da;
+  color: gray;
+  border: none;
 
-const events = [
-  {
-    title: 'Meeting 1',
-    start: new Date(2023, 11, 1),
-    end: new Date(2023, 11, 2),
-    description: 'Details about Meeting 1',
-  },
-  {
-    title: 'Meeting 2',
-    start: new Date(2023, 11, 15),
-    end: new Date(2023, 11, 17),
-    description: 'Details about Meeting 2',
-  },
-  // Add more events as needed
-];
+  &:hover {
+    background-color: #c3c9ce;
+    color: gray;
+  }
+
+  &:active, &:focus {
+    background-color: #c3c9ce !important;
+    color: gray !important;
+  }
+`
+
+const localizer = momentLocalizer(moment);
 
 const EventCalendar = () => {
   const contentRef = useRef(null);
@@ -96,9 +98,9 @@ const EventCalendar = () => {
                 {/* Display other event details as needed */}
               </Modal.Body>
               <Modal.Footer>
-                <Button variant="secondary" onClick={handleCloseModal}>
+                <CloseButton onClick={handleCloseModal}>
                   Close
-                </Button>
+                </CloseButton>
               </Modal.Footer>
             </Modal>
           </div>

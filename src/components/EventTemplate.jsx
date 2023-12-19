@@ -2,7 +2,6 @@ import { Container, Button } from 'react-bootstrap';
 import styled from 'styled-components';
 
 import { BiCalendarPlus } from 'react-icons/bi';
-import { AiFillHeart } from 'react-icons/ai';
 import { useParams } from 'react-router-dom';
 
 import { useState, useEffect } from 'react';
@@ -27,7 +26,6 @@ const StyledButton = styled(Button)`
     padding: 10px;
     border: 1px solid gray;
     background-color: transparent;
-    margin-left: 5px;
     color: black;
 
     &:hover, &:focus {
@@ -88,18 +86,14 @@ const EventTemplate = () => {
               <Text>{eventData.date} </Text> <Text> | </Text>
               <Text>{eventData.time}</Text> <br />
               <Text>{eventData.city}</Text><br/>
-              <Text>{eventData.address}</Text> <br /><br />
-
-              <Text style={{color: '#da7422'}}>{eventData.price}</Text><br/>
+              <Text>{eventData.address}</Text> <br />
+              <Text style={{color: '#da7422'}}>{eventData.price}</Text><br/><br />
               <p style={{fontSize: '18px', textAlign: 'justify'}}>{eventData.description}</p><br/>
               <EventLink href={eventData.link}><Text>{eventData.link}</Text></EventLink>
             </Grid>
             <Grid item xs={12} sm={6} style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-start', padding: '10px' }}>
               <StyledButton>
                 <BiCalendarPlus style={{ fontSize: '24px' }} />
-              </StyledButton>{' '}
-              <StyledButton>
-                <AiFillHeart style={{ fontSize: '24px' }} />
               </StyledButton>{' '}
             </Grid>
           </Grid>

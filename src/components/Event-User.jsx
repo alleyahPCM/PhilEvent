@@ -1,19 +1,18 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import { Button, Card, Toast, Modal } from 'react-bootstrap';
-import { BiCalendarPlus } from 'react-icons/bi';
-import { AiFillHeart } from 'react-icons/ai';
 import { Link } from "react-router-dom";
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 
 const EventContainer = styled.div`
   margin: 10px;
+  position: relative; /* Ensure relative positioning for absolute elements */
 `;
 
 const EventCard = styled(Card)`
   width: 18rem;
-  height: 315px;
+  height: 310px;
+  position: relative; /* Ensure relative positioning for absolute elements */
 `;
 
 const EventImg = styled.img`
@@ -46,19 +45,46 @@ const EventLink = styled(Link)`
   }
 `;
 
+const ConfirmButton = styled(Button)`
+  width: 90px;
+  border-radius: 45px;
+  background-color: #DA7422;
+  border: none;
+  margin-right: 5px;
+
+  &:hover {
+    background-color: #D06023;
+  }
+
+  &:active {
+    background-color: #D06023 !important;
+  }
+`
+
+const CancelButton = styled(Button)`
+  width: 90px;
+  border-radius: 45px;
+  background-color: #ced4da;
+  color: gray;
+  border: none;
+
+  &:hover {
+    background-color: #c3c9ce;
+    color: gray;
+  }
+
+  &:active, &:focus {
+    background-color: #c3c9ce !important;
+    color: gray !important;
+  }
+`
+
 const Event = ({ item, onRemove }) => {
   const titleRef = useRef(null);
-  const [isOverflowing, setIsOverflowing] = useState(false);
   const [status, setStatus] = useState(false);
   const [message, setMessage] = useState("");
   const [showToast, setShowToast] = useState(false);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
-
-  useEffect(() => {
-    if (titleRef.current) {
-      setIsOverflowing(titleRef.current.scrollHeight > titleRef.current.clientHeight);
-    }
-  }, [item.title]);
 
   const toast = () => {
     setShowToast(true);
@@ -96,7 +122,8 @@ const Event = ({ item, onRemove }) => {
             <span>{item.date}</span><span> | </span>
             <span>{item.time}</span> <br />
             <span>{item.city}</span> <br />
-            <a onClick={() => setShowConfirmationModal(true)} style={{ textAlign: "right", display: "block", color: "red", cursor: "pointer" }}>Remove</a>
+            <span onClick={() => setShowConfirmationModal(true)}   style={{ position: 'absolute', bottom: '10px', right: '16px',
+            color: 'red', cursor: 'pointer'}}>Remove</span>
           </Card.Text>
         </Card.Body>
       </EventCard>
@@ -126,16 +153,16 @@ const Event = ({ item, onRemove }) => {
         </Modal.Header>
         <Modal.Body>
           Are you sure you want to remove this event? <br/>
-          <Card.Title style={{ fontSize: 20, fontWeight: 'bold' }}>{item.title}</Card.Title> on <span>{item.date}</span><span> | </span>
+          <Card.Title style={{ fontSize: 20, fontWeight: 'bold', color: '#DA7422'}}>{item.title}</Card.Title> on <span>{item.date}</span><span> | </span>
           <span>{item.time}</span> - <span>{item.city}</span> <br />
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowConfirmationModal(false)}>
+          <CancelButton onClick={() => setShowConfirmationModal(false)}>
             Cancel
-          </Button>
-          <Button variant="primary" onClick={confirmModal}>
+          </CancelButton>
+          <ConfirmButton onClick={confirmModal}>
             Confirm
-          </Button>
+          </ConfirmButton>
         </Modal.Footer>
       </Modal>
     </EventContainer>
