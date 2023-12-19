@@ -212,6 +212,8 @@ app.post("/addevent/:id", (req, res) => {
   // Extract parameters from the request
   const eventId = req.params.id;
   const username = req.session.username;
+  console.log(eventId)
+  console.log(username);
 
   // Check if the event already exists for this user
   const selectQuery =
@@ -304,7 +306,7 @@ app.post("/signup", (req, res) => {
         return res.status(500).json({ error: "Internal Server Error" });
       }
       req.session.email = req.body.email;
-      req.session.username = req.body.username;
+      req.session.username = req.body.uname;
       return res.json({ message: "Signup Complete!" });
     });
   });
