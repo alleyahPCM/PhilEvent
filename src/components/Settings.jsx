@@ -87,10 +87,14 @@ const Settings = () => {
   };
 
   const handleCancel = () => {
-    // Reset userInfo to initialUserInfo
-    setUserInfo({ ...initialUserInfo });
+    // Reset userInfo to initialUserInfo including resetting password fields
+    setUserInfo({
+      ...initialUserInfo,
+      pass: '',
+      confpass: ''
+    });
   };
-
+  
   return (
     <Container>
       <Title>Settings</Title>
@@ -135,7 +139,8 @@ const Settings = () => {
             required
             id="changepass"
             label="Change Password"
-            defaultValue=""
+            type="password"
+            value={userInfo.pass} // Use value prop instead of defaultValue
             onChange={(e) => setUserInfo({ ...userInfo, pass: e.target.value })}
             style={{ marginBottom: 20 }}
           />
@@ -143,7 +148,8 @@ const Settings = () => {
             required
             id="confirmpass"
             label="Confirm Password"
-            defaultValue=""
+            type="password"
+            value={userInfo.confpass} // Use value prop instead of defaultValue
             onChange={(e) => setUserInfo({ ...userInfo, confpass: e.target.value })}
             style={{ marginBottom: 20 }}
           />
