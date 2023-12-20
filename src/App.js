@@ -9,6 +9,7 @@ import Signup from './pages/Signup';
 import Login from './pages/Login';
 import Event from './pages/Event';
 import Places from './pages/Places';
+import Search from './pages/Search';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/Places" element={<Places />} />
+        <Route path="/Search" element={<Search />} />
         <Route path="/Login" element={<Login />} />
         <Route path="/Signup" element={<Signup />} />
         <Route path="/UserHome" element={<UserHome />} />

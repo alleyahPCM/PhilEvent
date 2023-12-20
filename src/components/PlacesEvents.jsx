@@ -25,7 +25,6 @@ const MoreLink = styled.a`
     &:hover {
         color: #D06023;
     }
-
 `
 
 const PlacesEvents = () => {
