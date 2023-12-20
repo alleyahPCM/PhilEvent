@@ -75,7 +75,7 @@ const Settings = () => {
 
   const handleSave = async () => {
     try {
-      if (userInfo.pass == userInfo.confpass) {
+      if (userInfo.pass === userInfo.confpass) {
         const response = await axios.put('http://localhost:8080/update-user-info', userInfo);
         console.log(response.data);
       }

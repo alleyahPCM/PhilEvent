@@ -43,16 +43,21 @@ const HiddenTypography = styled(Typography)`
     }
 `
 
-const Sidebar = () => {
+const Sidebar = ({ onSidebarClick }) => {
     const location = useLocation();
-    const [currentPath, setCurrentPath] = useState(location.pathname);
+    const [currentPath, setCurrentPath] = useState('dashboard');
 
     useEffect(() => {
-        setCurrentPath(location.pathname);
+        setCurrentPath('dashboard');
     }, [location]);
 
     const isActive = (path) => {
         return path === currentPath ? 'active' : '';
+    };
+
+    const handleClick = (view) => {
+        setCurrentPath(view)
+        onSidebarClick(view);
     };
 
     const navigate = useNavigate()
@@ -69,19 +74,19 @@ const Sidebar = () => {
         <SideContainer>
             <div className="d-flex flex-column justify-content-between" style={{ height: '100%' }}>
                 <div>
-                    <SidebarItem href="/UserHome" className={isActive('/UserHome')}>
+                    <SidebarItem onClick={() => handleClick('dashboard')} className={isActive('dashboard')}>
                         <AiFillHome style={{ width: 20, height: 20 }} />
                         <HiddenTypography>Home</HiddenTypography>
                     </SidebarItem>
-                    <SidebarItem href="/Calendar" className={isActive('/Calendar')}>
+                    <SidebarItem onClick={() => handleClick('calendar')} className={isActive('calendar')}>
                         <BsCalendarWeekFill style={{ width: 20, height: 20 }} />
                         <HiddenTypography>Calendar</HiddenTypography>
                     </SidebarItem>
-                    <SidebarItem href="/MyEvents" className={isActive('/MyEvents')}>
+                    <SidebarItem onClick={() => handleClick('myevents')} className={isActive('myevents')}>
                         <BsCalendarHeartFill style={{ width: 20, height: 20 }} />
                         <HiddenTypography>My Events</HiddenTypography>
                     </SidebarItem>
-                    <SidebarItem href="/Settings" className={isActive('/Settings')}>
+                    <SidebarItem onClick={() => handleClick('settings')} className={isActive('settings')}>
                         <Settings style={{ width: 20, height: 20 }} />
                         <HiddenTypography>Settings</HiddenTypography>
                     </SidebarItem>
