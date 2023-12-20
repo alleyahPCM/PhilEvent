@@ -258,8 +258,6 @@ app.post("/addevent/:id", (req, res) => {
   // Extract parameters from the request
   const eventId = req.params.id;
   const username = req.session.username;
-  console.log(eventId)
-  console.log(username);
 
   // Check if the event already exists for this user
   const selectQuery =
@@ -425,7 +423,7 @@ app.get("/fetch-user-info", (req, res) => {
 
 app.put("/update-user-info", (req, res) => {
   if (req.session.email) {
-    const { firstName, lastName, username, email, newPassword} = req.body;
+    const { firstName, lastName, username, email, pass } = req.body;
 
     const checkQuery =
       "SELECT * FROM accounts WHERE (username = ? OR email = ?) AND email != ?";
@@ -441,15 +439,14 @@ app.put("/update-user-info", (req, res) => {
           .status(400)
           .json({ error: "Email or username already exists for another user" });
       }
-      const pass = await bcrypt.hash(newPassword, 10);
-      console.log(pass)
+      const newpass = await bcrypt.hash(pass, 10);
       const updateQuery =
         "UPDATE accounts SET firstname=?, lastname=?, username=?, password=? WHERE email=?";
       const updateValues = [
         firstName,
         lastName,
         username,
-        pass,
+        newpass,
         req.session.email,
       ];
 

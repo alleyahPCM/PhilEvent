@@ -31,7 +31,6 @@ function LoginForm() {
                 password: data.cpassword,
             });
 
-            console.log(response.data);
             if (response.data.success) {
                 navigate('/UserHome');
             } else {

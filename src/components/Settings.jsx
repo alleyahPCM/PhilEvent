@@ -75,14 +75,12 @@ const Settings = () => {
 
   const handleSave = async () => {
     try {
-      if (userInfo.pass === userInfo.confpass) {
+      if (userInfo.pass == userInfo.confpass) {
         const response = await axios.put('http://localhost:8080/update-user-info', userInfo);
         console.log(response.data);
       }
-      // Handle success or show a success message
     } catch (error) {
       console.error('Error updating user information:', error);
-      // Handle error or show an error message
     }
   };
 
@@ -90,11 +88,11 @@ const Settings = () => {
     // Reset userInfo to initialUserInfo including resetting password fields
     setUserInfo({
       ...initialUserInfo,
-      pass: '',
-      confpass: ''
+      pass: initialUserInfo.pass || '', // Ensure pass is a string to avoid uncontrolled input warning
+      confpass: initialUserInfo.confpass || '' // Ensure confpass is a string to avoid uncontrolled input warning
     });
   };
-  
+
   return (
     <Container>
       <Title>Settings</Title>
