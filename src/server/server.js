@@ -93,7 +93,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/allevents", (req, res) => {
-  let q = "SELECT * FROM events";
+  let q = "SELECT * FROM events WHERE date >= CURDATE()";
   const { city, startDate, endDate } = req.query;
 
   const filters = [];
@@ -107,9 +107,8 @@ app.get("/allevents", (req, res) => {
   }
 
   if (filters.length > 0) {
-    q += ` WHERE ${filters.join(" AND ")}`;
+    q += ` AND ${filters.join(" AND ")}`;
   }
-
   db.query(q, (err, data) => {
     if (err) {
       return res.status(500).json({ error: "Internal Server Error" });
@@ -127,6 +126,24 @@ app.get("/allevents", (req, res) => {
     }));
 
     return res.json(formattedEvents);
+  });
+});
+
+app.get("/uniquecities", (req, res) => {
+  const query = "SELECT DISTINCT city FROM events"; // Query to get distinct cities from your 'events' table
+
+  db.query(query, (err, results) => {
+    if (err) {
+      return res.status(500).json({ error: "Failed to fetch cities" });
+    }
+
+    const cities = results.map((result) => {
+      const city = result.city;
+      return city.charAt(0).toUpperCase() + city.slice(1); // Capitalizing the first letter
+    });
+
+    // Sending the unique cities as a response
+    return res.json({ cities });
   });
 });
 

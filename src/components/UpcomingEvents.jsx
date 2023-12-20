@@ -65,7 +65,7 @@ const customStyles = {
   }),
   placeholder: (provided) => ({
     ...provided,
-    color: 'gray',
+    color: '#888888',
   }),
 };
 
@@ -77,13 +77,6 @@ const date = [
   { value: 'This Year', label: 'This Year' },
 ];
 
-const city = [
-  { value: '', label: 'Select City', isDisabled: true },
-  { value: 'Cebu', label: 'Cebu' },
-  { value: 'Manila', label: 'Manila' },
-  { value: 'Davao', label: 'Davao' },
-];
-
 const EventsContainer = styled.div`
   padding: 20px;
   display: flex;
@@ -92,10 +85,47 @@ const EventsContainer = styled.div`
   justify-content: center; /* Align items to the left */
 `
 
+const ClearFilter = styled.span`
+  cursor: pointer;
+  font-size: 16px;
+  color: #DA7422;
+  margin-top: 5px;
+  &:hover, &:active {
+    color: #D06023 !important;
+  }
+`;
+
+
+const NoEventsText = styled.p`
+  font-size: 18px;
+  color: gray;
+`
+
 const UpcomingEvents = () => {
   const [selectedCity, setSelectedCity] = useState('');
   const [selectedDate, setSelectedDate] = useState('');
   const [events, setEvents] = useState([]); // State to hold events
+
+  const [cityOptions, setCityOptions] = useState([{ value: '', label: 'Select City', isDisabled: true }]);
+
+  useEffect(() => {
+    // Fetch unique cities from the backend when the component mounts
+    const fetchCities = async () => {
+      try {
+        const res = await axios.get("http://localhost:8080/uniquecities"); // Replace with your actual endpoint
+        const citiesFromDB = res.data.cities; // Assuming cities are returned as an array from the API
+        const cityOptionsFromDB = citiesFromDB.map((city) => ({
+          value: city,
+          label: city,
+        }));
+        setCityOptions(prevOptions => [prevOptions[0], ...cityOptionsFromDB]); // Merge with the default value
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchCities();
+  }, []);
 
   const handleCityChange = (selectedOption) => {
     setSelectedCity(selectedOption.value);
@@ -161,6 +191,16 @@ const UpcomingEvents = () => {
     }
   }, [selectedCity]);
 
+  const defaultDateOption = date[0];
+  const defaultCityOption = cityOptions[0];
+
+  const handleClearFilter = () => {
+    setSelectedCity(defaultCityOption.value);
+    setSelectedDate(defaultDateOption.value);
+  };
+
+  const [hasFetchedEvents, setHasFetchedEvents] = useState(false);
+
   useEffect(() => {
     const fetchData = async () => {
       let data;
@@ -170,12 +210,15 @@ const UpcomingEvents = () => {
         data = await fetchEventsByCityAndDate(selectedDate);
       }
       setEvents(data);
+      setHasFetchedEvents(true);
     };
     fetchData();
   }, [selectedCity, selectedDate, fetchEventsByCityAndDate]);
 
+  
+
   return (
-    <Container style={{ marginTop: 30, marginBottom: 50}}>
+    <Container style={{ marginTop: 30, marginBottom: 50}} id="events">
     <Title>Upcoming Events</Title>
     <hr/>
     <FilterContainer>
@@ -184,24 +227,29 @@ const UpcomingEvents = () => {
         <Select
           options={date}
           styles={customStyles}
-          defaultValue={date[0]}
+          value={date.find(option => option.value === selectedDate) || defaultDateOption}
           onChange={handleDateChange}
         />
       </Filter>
       <Filter>
         <FilterText>Location: </FilterText>
         <Select
-          options={city}
+          options={cityOptions}
           styles={customStyles}
-          defaultValue={city[0]}
+          value={cityOptions.find(option => option.value === selectedCity) || cityOptions[0]}
           onChange={handleCityChange} // Handle city selection change
         />
       </Filter>
+      <ClearFilter onClick={handleClearFilter}>Clear Filter</ClearFilter>
     </FilterContainer>
     <EventsContainer>
-      {events.map((item) => (
+      {hasFetchedEvents && events.length === 0 ? (
+        <NoEventsText>No Events Found</NoEventsText>
+      ) : (
+        events.map((item) => (
           <Event item={item} key={item.id} />
-      ))}
+        ))
+      )}
     </EventsContainer>
   </Container>
   );
