@@ -48,7 +48,16 @@ const Sidebar = ({ onSidebarClick }) => {
     const [currentPath, setCurrentPath] = useState('dashboard');
 
     useEffect(() => {
-        setCurrentPath('dashboard');
+        const pathname = location.pathname;
+        if (pathname === '/Calendar') {
+            setCurrentPath('calendar');
+        } else if (pathname === '/MyEvents') {
+            setCurrentPath('myevents');
+        } else if (pathname === '/Settings') {
+            setCurrentPath('settings');
+        } else {
+            setCurrentPath('dashboard');
+        }
     }, [location]);
 
     const isActive = (path) => {
