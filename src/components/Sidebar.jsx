@@ -26,6 +26,14 @@ const SidebarItem = styled.a`
         cursor: pointer;
     }
 
+    &.logout { /* New class added for Logout link */
+        color: white;
+    }
+
+    &.logout:hover { /* Hover color for Logout link */
+        color: #f9f2db;
+    }
+
     @media (max-width: 900px) {
         justify-content: center;
     }
@@ -33,7 +41,11 @@ const SidebarItem = styled.a`
 
 const SideContainer = styled(Container)`
     padding: 30px;
-    height: 100%;
+    height: calc(100vh - 70px); /* Adjust this value to match the navbar height */
+    position: sticky;
+    top: 70px; /* Adjust this value to match the navbar height */
+    left: 0;
+    overflow-y: auto; /* Enable vertical scrolling when content exceeds viewport height */
 `
 
 const HiddenTypography = styled(Typography)`
@@ -101,7 +113,7 @@ const Sidebar = ({ onSidebarClick }) => {
                     </SidebarItem>
                 </div>
 
-                <SidebarItem onClick={handleLogout}>
+                <SidebarItem onClick={handleLogout} className={`logout ${isActive('logout')}`}>
                     <MeetingRoom style={{ width: 20, height: 20 }} />
                     <HiddenTypography>Logout</HiddenTypography>
                 </SidebarItem>

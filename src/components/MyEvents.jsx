@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Container } from 'react-bootstrap';
 import styled from 'styled-components';
 import axios from 'axios';
@@ -19,16 +19,6 @@ const EventsContainer = styled.div`
 
 const MyEvents = () => {
   const [userEvents, setUserEvents] = useState([]);
-  const contentRef = useRef(null);
-
-  useEffect(() => {
-    const content = contentRef.current;
-    if (content.scrollHeight <= content.clientHeight) {
-      content.style.overflowY = 'hidden';
-    } else {
-      content.style.overflowY = 'scroll';
-    }
-  }, []);
 
   useEffect(() => {
     axios.get("http://localhost:8080/userevents")
@@ -44,9 +34,9 @@ const MyEvents = () => {
   };
 
   return (
-    <Container>
+    <Container style={{ marginTop: '20px'}}>
       <Title>My Saved Events</Title>
-      <div ref={contentRef} style={{ overflow: 'hidden', overflowY: 'scroll', height: 'calc(100vh - 150px)' }}>
+      <div>
         <EventsContainer>
           {userEvents.map((item) => (
             <Event item={item} key={item.id} onRemove={removeEvent} />

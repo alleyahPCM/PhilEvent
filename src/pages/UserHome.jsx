@@ -46,9 +46,9 @@ const UserHome = () => {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+    <div style={{ paddingTop: '70px' }}>
       <NavBarAlt />
-      <div style={{ flex: 1, display: 'flex' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 70px)' }}>
         <Grid container>
           <Grid item sm={2} style={{ backgroundColor: '#A59132' }}>
             <Sidebar onSidebarClick={handleSidebarClick} />

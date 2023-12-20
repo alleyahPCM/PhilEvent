@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect }from 'react';
+import { useState, useEffect }from 'react';
 import { Container } from 'react-bootstrap';
 import styled from 'styled-components';
 import DashboardEvent from './DashboardEvent';
@@ -12,8 +12,6 @@ const Title = styled.h2`
 `
 
 const Dashboard = () => {
-  const contentRef = useRef(null);
-
   const [userEvents, setUserEvents] = useState([]);
 
   useEffect(() => {
@@ -46,15 +44,6 @@ const Dashboard = () => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    const content = contentRef.current;
-    if (content.scrollHeight <= content.clientHeight) {
-      content.style.overflowY = 'hidden';
-    } else {
-      content.style.overflowY = 'scroll';
-    }
-  }, []);
-
   const getUserEventsByDay = (dayOfWeek) => {
     const events = userEvents.filter((event) => {
       const eventDate = new Date(event.date);
@@ -66,9 +55,9 @@ const Dashboard = () => {
   };
 
   return (
-    <Container>
+    <Container style={{ marginTop: '20px'}}>
       <Title>Dashboard</Title>
-      <div ref={contentRef} style={{ overflow: 'hidden', overflowY: 'scroll', height: 'calc(100vh - 150px)' }}>
+      <div>
         <div style={{ margin: 20 }}>
           {[0, 1, 2, 3, 4, 5, 6].map((day) => (
             <div key={day}>

@@ -94,12 +94,9 @@ const Settings = () => {
   };
 
   return (
-    <Container>
+    <Container style={{ marginTop: '20px'}}>
       <Title>Settings</Title>
-      <div style={{
-        overflow: 'hidden', overflowY: 'scroll', height: 'calc(100vh - 150px)', display: 'flex',
-        justifyContent: 'center'
-      }}>
+      <div style={{ display: 'flex', justifyContent: 'center'}}>
         <div style={{ margin: 20, display: 'flex', flexDirection: 'column', maxWidth: 700, width: '100%' }}>
           <TextField
             required

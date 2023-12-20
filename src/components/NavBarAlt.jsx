@@ -5,8 +5,25 @@ import { AccountCircle, NotificationsOutlined, Search } from '@mui/icons-materia
 import LogoGreen from '../img/logo-green.png';
 import Badge from '@mui/material/Badge';
 import { useMediaQuery } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
+
+const FixedStyledNavbar = styled(Navbar)`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background-color: white;
+  border-bottom: 1px solid #ced4da;
+  width: 100%; /* Ensure the navbar spans the entire width */
+`;
+
+const NonFixedStyledNavbar = styled(Navbar)`
+  background-color: white;
+  border-bottom: 1px solid #ced4da;
+  width: 100%; /* Ensure the navbar spans the entire width */
+`;
 
 const LogoText = styled.h2`
     font-weight: bold;
@@ -98,9 +115,15 @@ const NavBarAlt = () => {
         }
     };
 
+    const location = useLocation();
+    const isFixedNavbar = (location.pathname === '/UserHome' || 
+    location.pathname === '/Calendar' || location.pathname === '/MyEvents' || location.pathname === '/Settings');
+
+    const NavBarComponent = isFixedNavbar ? FixedStyledNavbar : NonFixedStyledNavbar;
+
 
   return (
-    <Navbar collapseOnSelect expand="lg" style={{ backgroundColor: 'white', borderBottom: '1px solid #ced4da' }}>
+    <NavBarComponent collapseOnSelect expand="lg">
         <Container>
             <Navbar.Brand href="/" style={{paddingTop: 10, display: 'flex'}}>
                 <img src={LogoGreen} alt='logo' style={{width: 40, height: 40}}/>
@@ -161,7 +184,7 @@ const NavBarAlt = () => {
                 </Nav>
             </Navbar.Collapse>
         </Container>
-    </Navbar>
+    </NavBarComponent>
   )
 }
 

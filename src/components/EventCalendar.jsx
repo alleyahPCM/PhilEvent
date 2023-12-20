@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect }from 'react';
+import { useState, useEffect }from 'react';
 import { Container, Modal, Button } from 'react-bootstrap';
 import styled from 'styled-components';
 
@@ -34,17 +34,7 @@ const CloseButton = styled(Button)`
 const localizer = momentLocalizer(moment);
 
 const EventCalendar = () => {
-  const contentRef = useRef(null);
   const [userEvents, setUserEvents] = useState([]);
-
-  useEffect(() => {
-    const content = contentRef.current;
-    if (content.scrollHeight <= content.clientHeight) {
-      content.style.overflowY = 'hidden';
-    } else {
-      content.style.overflowY = 'scroll';
-    }
-  }, []);
 
   useEffect(() => {
     axios.get("http://localhost:8080/usercalendar")
@@ -65,9 +55,9 @@ const EventCalendar = () => {
   };
 
   return (
-    <Container>
+    <Container style={{ marginTop: '20px'}}>
         <Title>Calendar</Title>
-        <div ref={contentRef} style={{overflow: 'hidden', overflowY: 'scroll', height: 'calc(100vh - 150px)'}}>
+        <div>
           <div style={{ height: '800px', padding: '20px' }}>
             <Calendar
               localizer={localizer}

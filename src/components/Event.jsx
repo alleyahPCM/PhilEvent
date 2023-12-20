@@ -2,9 +2,8 @@ import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import { Button, Card, Toast, Modal } from 'react-bootstrap';
 import { BiCalendarPlus } from 'react-icons/bi';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 
 const EventContainer = styled.div`
   margin: 10px;

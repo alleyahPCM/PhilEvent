@@ -92,7 +92,7 @@ const EventsContainer = styled.div`
   justify-content: center; /* Align items to the left */
 `
 
-const PopularEvents = () => {
+const UpcomingEvents = () => {
   const [selectedCity, setSelectedCity] = useState('');
   const [selectedDate, setSelectedDate] = useState('');
   const [events, setEvents] = useState([]); // State to hold events
@@ -176,7 +176,7 @@ const PopularEvents = () => {
 
   return (
     <Container style={{ marginTop: 30, marginBottom: 50}}>
-    <Title>Popular Events</Title>
+    <Title>Upcoming Events</Title>
     <hr/>
     <FilterContainer>
       <Filter>
@@ -207,4 +207,4 @@ const PopularEvents = () => {
   );
 };
 
-export default PopularEvents;
+export default UpcomingEvents;

@@ -11,3 +11,5 @@ npm install @hookform/resolvers yup
 npm install axios
 
 npm install react-big-calendar moment
+
+npm i react-loading-skeleton
