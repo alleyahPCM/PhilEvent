@@ -215,7 +215,20 @@ const UpcomingEvents = () => {
     fetchData();
   }, [selectedCity, selectedDate, fetchEventsByCityAndDate]);
 
-  
+  useEffect(() => {
+    const scrollToEvents = () => {
+        const eventsSection = document.getElementById("events");
+        if (eventsSection) {
+            eventsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    };
+
+    // Check if the URL contains #events
+    if (window.location.href.indexOf("#events") > -1) {
+        // Scroll after a slight delay to ensure content is loaded
+        setTimeout(scrollToEvents, 100);
+    }
+  }, []);
 
   return (
     <Container style={{ marginTop: 30, marginBottom: 50}} id="events">
