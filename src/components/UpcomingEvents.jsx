@@ -205,7 +205,7 @@ const UpcomingEvents = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      console.log(loading)
+      console.log(loading);
       try {
         let data;
         if (selectedCity === '' && selectedDate === '') {
@@ -222,7 +222,8 @@ const UpcomingEvents = () => {
       }
     };
     fetchData();
-  }, [selectedCity, selectedDate, fetchEventsByCityAndDate]);
+  }, [selectedCity, selectedDate, fetchEventsByCityAndDate, loading]);
+  
 
   useEffect(() => {
     const scrollToEvents = () => {

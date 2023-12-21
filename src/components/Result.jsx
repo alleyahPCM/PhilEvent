@@ -215,7 +215,7 @@ const Result = () => {
       console.error(err);
       throw err;
     }
-  }, [selectedCity]);
+  }, [selectedCity, search]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -236,7 +236,7 @@ const Result = () => {
       }
     };
     fetchData();
-  }, [selectedCity, selectedDate, fetchEventsByCityAndDate]);
+  }, [selectedCity, selectedDate, fetchEventsByCityAndDate, search, loading]);
 
   const handleCityChange = (selectedOption) => {
     setSelectedCity(selectedOption.value);
