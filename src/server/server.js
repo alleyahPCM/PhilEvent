@@ -765,14 +765,15 @@ app.get("/usercalendar", (req, res) => {
       return res.status(500).json({ error: "Internal Server Error" });
     }
 
-    const formattedEvents = data.map((event) => ({
-      title: event.title,
-      start: new Date(event.date),
-      end: new Date(event.date),
-      description: `${event.title} on ${formatToMonthDayYear(
-        event.date
-      )} | ${formatToTimeAMPM(event.time)} - ${event.city}`,
-    }));
+    const formattedEvents = data.map((event) => {
+      const formattedCity = event.city.charAt(0).toUpperCase() + event.city.slice(1);
+      return {
+        title: event.title,
+        start: new Date(event.date),
+        end: new Date(event.date),
+        description: `${event.title} on ${formatToMonthDayYear(event.date)} | ${formatToTimeAMPM(event.time)} - ${formattedCity}`,
+      };
+    });
 
     return res.json(formattedEvents);
   });

@@ -4,6 +4,10 @@ import styled from 'styled-components';
 import TextField from '@mui/material/TextField';
 import axios from 'axios';
 
+import { settingsSchema } from "../validations/UserValidation";
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import IconButton from '@mui/material/IconButton';
+
 const Title = styled.h2`
   font-weight: bold;
   color: #A59132;
@@ -75,21 +79,76 @@ const Settings = () => {
       .catch(err => console.log(err))
   }, []);
 
+  const [errorMessages, setErrorMessages] = useState({
+    firstName: '',
+    lastName: '',
+    username: '',
+    email: '',
+    pass: '',
+    confpass: ''
+  });
+  
+  const updateUserInfo = async () => {
+    try {
+      // Fetch updated user info from the database and update state
+      const res = await axios.get("http://localhost:8080/fetch-user-info");
+      const user = res.data.user;
+  
+      // Set pass and confpass to blank in the user object
+      const { pass, confpass, ...userInfoWithoutPass } = user;
+      const updatedUser = { ...userInfoWithoutPass, pass: '', confpass: '' };
+  
+      // Reset the form to initial values and clear error messages
+      setUserInfo(updatedUser);
+      setInitialUserInfo(user);
+      setErrorMessages({
+        firstName: '',
+        lastName: '',
+        username: '',
+        email: '',
+        pass: '',
+        confpass: ''
+      });
+      console.log(user);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  
+
   const handleSave = async () => {
     try {
+      // Validate the userInfo object using the settingsSchema
+      await settingsSchema.validate(userInfo, { abortEarly: false });
+  
       if (userInfo.pass === userInfo.confpass) {
         const response = await axios.put('http://localhost:8080/update-user-info', userInfo);
         setErrorMessage(response.data.message);
-        setStatus("success")
-        // No need to setToast here unless you specifically want to use it
-        setUserInfo({ ...initialUserInfo, pass: initialUserInfo.pass || '', confpass: initialUserInfo.confpass || '' });
+        setStatus("success");
+        
+        // Call the updateUserInfo function to reset and fetch updated user info
+        await updateUserInfo();
       } else {
         setErrorMessage("Password does not Match!");
         setStatus("danger")
       }
     } catch (error) {
-      console.error('Error updating user information:', error);
-      // Set an error message here if needed
+      if (error.name === 'ValidationError') {
+        const errors = {};
+    
+        // Handle Yup validation errors for each field
+        error.inner.forEach(err => {
+          errors[err.path] = err.message;
+        });
+    
+        setErrorMessages(errors); // Set error messages for each field
+        setStatus("danger");
+        setErrorMessage("Please fix the errors before saving!");
+      } else {
+        console.error('Error updating user information:', error);
+        setErrorMessage("An error occurred while saving. Please try again.");
+        setStatus("danger");
+      }
     }
   };
 
@@ -102,61 +161,107 @@ const Settings = () => {
     });
   };
 
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const handleInputChange = (field, value) => {
+    setUserInfo(prevUserInfo => ({
+      ...prevUserInfo,
+      [field]: value,
+    }));
+  };
+
+
   return (
     <Container style={{ marginTop: '20px' }}>
       <Title>Settings</Title>
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         <div style={{ margin: 20, display: 'flex', flexDirection: 'column', maxWidth: 700, width: '100%' }}>
-          <TextField
-            required
-            id="fname"
-            label="First Name"
-            value={userInfo.firstName}
-            onChange={(e) => setUserInfo({ ...userInfo, firstName: e.target.value })}
-            style={{ marginBottom: 20 }}
-          />
-          <TextField
-            required
-            id="lname"
-            label="Last Name"
-            value={userInfo.lastName}
-            onChange={(e) => setUserInfo({ ...userInfo, lastName: e.target.value })}
-            style={{ marginBottom: 20 }}
-          />
-          <TextField
-            required
-            id="uname"
-            label="Username"
-            value={userInfo.username}
-            onChange={(e) => setUserInfo({ ...userInfo, username: e.target.value })}
-            style={{ marginBottom: 20 }}
-          />
-          <TextField
-            required
-            id="email"
-            label="Email"
-            value={userInfo.email}
-            onChange={(e) => setUserInfo({ ...userInfo, email: e.target.value })}
-            style={{ marginBottom: 20 }}
-          />
-          <TextField
-            required
-            id="changepass"
-            label="Change Password"
-            type="password"
-            value={userInfo.pass} // Use value prop instead of defaultValue
-            onChange={(e) => setUserInfo({ ...userInfo, pass: e.target.value })}
-            style={{ marginBottom: 20 }}
-          />
-          <TextField
-            required
-            id="confirmpass"
-            label="Confirm Password"
-            type="password"
-            value={userInfo.confpass} // Use value prop instead of defaultValue
-            onChange={(e) => setUserInfo({ ...userInfo, confpass: e.target.value.toString() })}
-            style={{ marginBottom: 20 }}
-          />
+        <TextField
+          required
+          id="fname"
+          label="First Name"
+          value={userInfo.firstName}
+          onChange={(e) => handleInputChange('firstName', e.target.value)}
+          error={!!errorMessages.firstName}
+          helperText={errorMessages.firstName || ''}
+          style={{ marginBottom: 20 }}
+        />
+        <TextField
+          required
+          id="lname"
+          label="Last Name"
+          value={userInfo.lastName}
+          onChange={(e) => handleInputChange('lastName', e.target.value )}
+          error={!!errorMessages.lastName}
+          helperText={errorMessages.lastName || ''}
+          style={{ marginBottom: 20 }}
+        />
+        <TextField
+          required
+          id="uname"
+          label="Username"
+          value={userInfo.username}
+          onChange={(e) => handleInputChange('username', e.target.value )}
+          error={!!errorMessages.username}
+          helperText={errorMessages.username || ''}
+          style={{ marginBottom: 20 }}
+        />
+        <TextField
+          required
+          id="email"
+          label="Email"
+          value={userInfo.email}
+          onChange={(e) => handleInputChange('email', e.target.value )}
+          error={!!errorMessages.email}
+          helperText={errorMessages.email || ''}
+          style={{ marginBottom: 20 }}
+        />
+        <TextField
+          required
+          id="changepass"
+          label="Change Password"
+          type={showPassword ? 'text' : 'password'}
+          value={userInfo.pass}
+          onChange={(e) => handleInputChange('pass', e.target.value )}
+          error={!!errorMessages.pass}
+          helperText={errorMessages.pass || ''}
+          style={{ marginBottom: 20 }}
+          InputProps={{
+            endAdornment: (
+              <IconButton
+                aria-label="toggle password visibility"
+                onClick={() => setShowPassword(!showPassword)}
+                edge="end"
+              >
+                {showPassword ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            ),
+          }}
+        />
+
+        <TextField
+          required
+          id="confirmpass"
+          label="Confirm Password"
+          type={showConfirmPassword ? 'text' : 'password'}
+          value={userInfo.confpass}
+          onChange={(e) => handleInputChange('confpass', e.target.value )}
+          error={!!errorMessages.confpass}
+          helperText={errorMessages.confpass || ''}
+          style={{ marginBottom: 20 }}
+          InputProps={{
+            endAdornment: (
+              <IconButton
+                aria-label="toggle confirm password visibility"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                edge="end"
+              >
+                {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            ),
+          }}
+        />
           <ButtonWrapper>
             <CancelButton onClick={handleCancel}>Cancel</CancelButton>
             <SaveButton onClick={handleSave}>Save</SaveButton>

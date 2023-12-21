@@ -81,7 +81,7 @@ const EventCalendar = () => {
 
             <Modal show={selectedEvent !== null} onHide={handleCloseModal}>
               <Modal.Header closeButton>
-                <Modal.Title>{selectedEvent?.title}</Modal.Title>
+                <Modal.Title style={{color: '#DA7422', fontWeight: 'bold'}}>{selectedEvent?.title}</Modal.Title>
               </Modal.Header>
               <Modal.Body>
                 <p>{selectedEvent?.description}</p>
