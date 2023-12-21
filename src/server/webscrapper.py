@@ -82,7 +82,7 @@ def delete():
         if connection.is_connected():
             cursor = connection.cursor()
             curr = datetime.now().strftime('%Y-%m-%d')
-            cursor.execute(f"DELETE FROM events WHERE date <= \'{curr}\'")
+            cursor.execute(f"DELETE FROM events WHERE date < \'{curr}\'")
             connection.commit()
                     
 

@@ -40,7 +40,6 @@ const UserHome = () => {
   }, [navigate, location]);
 
   const handleSidebarClick = (view) => {
-    setIsLoading(true);
     setCurrentView(view);
     setIsLoading(false);
   };
@@ -56,8 +55,7 @@ const UserHome = () => {
           <Grid item sm={10}>
             {isLoading ? (
               <>
-                <Skeleton height={150} style={{ marginBottom: 20 }} />
-                <Skeleton height={150} style={{ marginBottom: 20 }} />
+                <Skeleton style={{ width: 350, marginBottom: 20, top: '50%', left: '40%' }} />
               </>
             ) : (
               <>

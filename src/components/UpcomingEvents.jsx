@@ -2,6 +2,8 @@ import { Container } from 'react-bootstrap';
 import styled from 'styled-components';
 
 import Select from 'react-select';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 import Event from './Event';
 import { useState, useEffect, useCallback } from 'react';
 import axios from "axios";
@@ -104,21 +106,21 @@ const NoEventsText = styled.p`
 const UpcomingEvents = () => {
   const [selectedCity, setSelectedCity] = useState('');
   const [selectedDate, setSelectedDate] = useState('');
-  const [events, setEvents] = useState([]); // State to hold events
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const [cityOptions, setCityOptions] = useState([{ value: '', label: 'Select City', isDisabled: true }]);
 
   useEffect(() => {
-    // Fetch unique cities from the backend when the component mounts
     const fetchCities = async () => {
       try {
-        const res = await axios.get("http://localhost:8080/uniquecities"); // Replace with your actual endpoint
-        const citiesFromDB = res.data.cities; // Assuming cities are returned as an array from the API
+        const res = await axios.get("http://localhost:8080/uniquecities");
+        const citiesFromDB = res.data.cities;
         const cityOptionsFromDB = citiesFromDB.map((city) => ({
           value: city,
           label: city,
         }));
-        setCityOptions(prevOptions => [prevOptions[0], ...cityOptionsFromDB]); // Merge with the default value
+        setCityOptions(prevOptions => [prevOptions[0], ...cityOptionsFromDB]);
       } catch (error) {
         console.error(error);
       }
@@ -151,35 +153,34 @@ const UpcomingEvents = () => {
         url += `&date=${formattedDate}`;
       } else if (selectedDate === 'This Week') {
         const today = new Date();
-        const currentDay = today.getDay(); // Sunday: 0, Monday: 1, ..., Saturday: 6
-        
+        const currentDay = today.getDay();
+
         const startOfWeek = new Date(today);
-        startOfWeek.setDate((today.getDate() - currentDay) + 1); // Go back to the start of the current week (Sunday)
-        
+        startOfWeek.setDate((today.getDate() - currentDay) + 1);
+
         const endOfWeek = new Date(today);
-        endOfWeek.setDate(today.getDate() + (6 - currentDay) + 1); // Move to the end of the current week (Saturday)
-        
+        endOfWeek.setDate(today.getDate() + (6 - currentDay) + 1);
+
         const formattedStartOfWeek = startOfWeek.toISOString().split('T')[0];
         const formattedAdjustedEndOfWeek = endOfWeek.toISOString().split('T')[0];
-        
-        // Use the adjusted end date for filtering events up to the end of Saturday
-        url += `&startDate=${formattedStartOfWeek}&endDate=${formattedAdjustedEndOfWeek}`;      
+
+        url += `&startDate=${formattedStartOfWeek}&endDate=${formattedAdjustedEndOfWeek}`;
       } else if (selectedDate === 'This Month') {
         const today = new Date();
-        const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1); // Start of current month
-        const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0); // End of current month
-      
+        const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+        const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
         const formattedStartOfMonth = startOfMonth.toISOString().split('T')[0];
         const formattedEndOfMonth = endOfMonth.toISOString().split('T')[0];
-      
+
         url += `&startDate=${formattedStartOfMonth}&endDate=${formattedEndOfMonth}`;
       } else if (selectedDate === 'This Year') {
         const today = new Date();
-        const endOfYear = new Date(today.getFullYear(), 11, 31); // End of the current year
-      
+        const endOfYear = new Date(today.getFullYear(), 11, 31);
+
         const formattedStartOfYear = today.toISOString().split('T')[0];
         const formattedEndOfYear = endOfYear.toISOString().split('T')[0];
-      
+
         url += `&startDate=${formattedStartOfYear}&endDate=${formattedEndOfYear}`;
       }
 
@@ -188,6 +189,7 @@ const UpcomingEvents = () => {
     } catch (err) {
       console.error(err);
       throw err;
+    } finally {
     }
   }, [selectedCity]);
 
@@ -203,68 +205,77 @@ const UpcomingEvents = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      let data;
-      if (selectedCity === '' && selectedDate === '') {
-        data = await fetchdata();
-      } else {
-        data = await fetchEventsByCityAndDate(selectedDate);
+      console.log(loading)
+      try {
+        let data;
+        if (selectedCity === '' && selectedDate === '') {
+          data = await fetchdata();
+        } else {
+          data = await fetchEventsByCityAndDate(selectedDate);
+        }
+        setEvents(data);
+        setHasFetchedEvents(true);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
       }
-      setEvents(data);
-      setHasFetchedEvents(true);
     };
     fetchData();
   }, [selectedCity, selectedDate, fetchEventsByCityAndDate]);
 
   useEffect(() => {
     const scrollToEvents = () => {
-        const eventsSection = document.getElementById("events");
-        if (eventsSection) {
-            eventsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
+      const eventsSection = document.getElementById("events");
+      if (eventsSection) {
+        eventsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     };
 
     // Check if the URL contains #events
     if (window.location.href.indexOf("#events") > -1) {
-        // Scroll after a slight delay to ensure content is loaded
-        setTimeout(scrollToEvents, 100);
+      // Scroll after a slight delay to ensure content is loaded
+      setTimeout(scrollToEvents, 100);
     }
   }, []);
 
   return (
-    <Container style={{ marginTop: 30, marginBottom: 50}} id="events">
-    <Title>Upcoming Events</Title>
-    <hr/>
-    <FilterContainer>
-      <Filter>
-        <FilterText>Date: </FilterText>
-        <Select
-          options={date}
-          styles={customStyles}
-          value={date.find(option => option.value === selectedDate) || defaultDateOption}
-          onChange={handleDateChange}
-        />
-      </Filter>
-      <Filter>
-        <FilterText>Location: </FilterText>
-        <Select
-          options={cityOptions}
-          styles={customStyles}
-          value={cityOptions.find(option => option.value === selectedCity) || cityOptions[0]}
-          onChange={handleCityChange} // Handle city selection change
-        />
-      </Filter>
-      <ClearFilter onClick={handleClearFilter}>Clear Filter</ClearFilter>
-    </FilterContainer>
-    <EventsContainer>
-      {hasFetchedEvents && events.length === 0 ? (
-        <NoEventsText>No Events Found</NoEventsText>
-      ) : (
-        events.map((item) => (
-          <Event item={item} key={item.id} />
-        ))
-      )}
-    </EventsContainer>
-  </Container>
+    <Container style={{ marginTop: 30, marginBottom: 50 }} id="events">
+      <Title>Upcoming Events</Title>
+      <hr />
+      <FilterContainer>
+        <Filter>
+          <FilterText>Date: </FilterText>
+          <Select
+            options={date}
+            styles={customStyles}
+            value={date.find(option => option.value === selectedDate) || defaultDateOption}
+            onChange={handleDateChange}
+          />
+        </Filter>
+        <Filter>
+          <FilterText>Location: </FilterText>
+          <Select
+            options={cityOptions}
+            styles={customStyles}
+            value={cityOptions.find(option => option.value === selectedCity) || cityOptions[0]}
+            onChange={handleCityChange} // Handle city selection change
+          />
+        </Filter>
+        <ClearFilter onClick={handleClearFilter}>Clear Filter</ClearFilter>
+      </FilterContainer>
+      <EventsContainer>
+        {loading ? (
+          <>
+            <Skeleton width={950} height={50} />
+          </>
+        ) : hasFetchedEvents && events.length === 0 ? (
+          <NoEventsText>No Events Found</NoEventsText>
+        ) : (
+          events.map((item) => <Event item={item} key={item.id} />)
+        )}
+      </EventsContainer>
+    </Container>
   );
 };
 

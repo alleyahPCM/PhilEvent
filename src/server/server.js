@@ -129,6 +129,45 @@ app.get("/allevents", (req, res) => {
   });
 });
 
+app.get("/searchevents/:search", (req, res) => {
+  const eventId = req.params.search;
+  let q = `SELECT * FROM events WHERE title LIKE '%${eventId}%'`;
+  const { city, startDate, endDate } = req.query;
+
+  const filters = [];
+
+  if (city) {
+    filters.push(`city = '${city}'`);
+  }
+
+  if (startDate && endDate) {
+    filters.push(`date BETWEEN '${startDate}' AND '${endDate}'`);
+  }
+
+  if (filters.length > 0) {
+    q += ` AND ${filters.join(" AND ")}`;
+  }
+  console.log(q)
+  db.query(q, (err, data) => {
+    if (err) {
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+
+    const formattedEvents = data.map((event) => ({
+      id: event.id,
+      img: event.image,
+      title: event.title,
+      date: formatToMonthDayYear(event.date),
+      time: formatToTimeAMPM(event.time),
+      city: event.city.charAt(0).toUpperCase() + event.city.slice(1),
+      price: event.ticket_price,
+      link: event.link,
+    }));
+
+    return res.json(formattedEvents);
+  });
+});
+
 app.get("/uniquecities", (req, res) => {
   const query = "SELECT DISTINCT city FROM events"; // Query to get distinct cities from your 'events' table
 
@@ -474,7 +513,7 @@ app.put("/update-user-info", (req, res) => {
 
         return res.json({
           success: true,
-          message: "User information updated successfully",
+          message: "User information updated successfully!",
         });
       });
     });

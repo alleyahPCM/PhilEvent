@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Container, Nav, Navbar, Form, Button } from 'react-bootstrap';
 import styled from 'styled-components';
 import { Search } from '@mui/icons-material';
@@ -82,38 +83,48 @@ const Link = styled.span`
 `
 
 const NavBar = () => {
-  return (
-    <Navbar collapseOnSelect expand="lg" style={{ backgroundColor: 'white', borderBottom: '1px solid #ced4da' }}>
-        <Container>
-            <Navbar.Brand href="/" style={{paddingTop: 10, display: 'flex'}}>
-                <img src={LogoGreen} alt='logo' style={{width: 40, height: 40}}/>
-                <LogoText>PhilEvent.</LogoText>
-            </Navbar.Brand>
-            <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-            <Navbar.Collapse id="responsive-navbar-nav">
-                <Nav className="me-auto">
-                    <Nav.Link href="/#events"><Link>Events</Link></Nav.Link>
-                    <Nav.Link href="/Places"><Link>Places</Link></Nav.Link>
-                </Nav>
-                <Form className="d-flex">
-                    <SearchContainer>
-                        <SearchBar
-                            type="search"
-                            placeholder="Search"
-                            className="border-0"
-                            aria-label="Search"
-                        />
-                        <SearchIcon />
-                    </SearchContainer>
-                </Form>
-                <Nav>
-                    <Nav.Link href="/Login"><LoginButton>Login</LoginButton></Nav.Link>
-                    <Nav.Link href="/Signup"><SignUpButton>Sign Up</SignUpButton></Nav.Link>
-                </Nav>
-            </Navbar.Collapse>
-        </Container>
-    </Navbar>
-  )
+    const [searchValue, setSearchValue] = useState('');
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        if (searchValue !== '') {
+            window.location.href = `/Search?search=${encodeURIComponent(searchValue)}`;
+        }
+    };
+    return (
+        <Navbar collapseOnSelect expand="lg" style={{ backgroundColor: 'white', borderBottom: '1px solid #ced4da' }}>
+            <Container>
+                <Navbar.Brand href="/" style={{ paddingTop: 10, display: 'flex' }}>
+                    <img src={LogoGreen} alt='logo' style={{ width: 40, height: 40 }} />
+                    <LogoText>PhilEvent.</LogoText>
+                </Navbar.Brand>
+                <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+                <Navbar.Collapse id="responsive-navbar-nav">
+                    <Nav className="me-auto">
+                        <Nav.Link href="/#events"><Link>Events</Link></Nav.Link>
+                        <Nav.Link href="/Places"><Link>Places</Link></Nav.Link>
+                    </Nav>
+                    <Form className="d-flex" onSubmit={handleSubmit}>
+                        <SearchContainer>
+                            <SearchBar
+                                type="search"
+                                name="searsh"
+                                placeholder="Search"
+                                className="border-0"
+                                aria-label="Search"
+                                onChange={(e) => setSearchValue(e.target.value)}
+                            />
+                            <Button type="submit" variant="link"><SearchIcon /></Button>
+                        </SearchContainer>
+                    </Form>
+                    <Nav>
+                        <Nav.Link href="/Login"><LoginButton>Login</LoginButton></Nav.Link>
+                        <Nav.Link href="/Signup"><SignUpButton>Sign Up</SignUpButton></Nav.Link>
+                    </Nav>
+                </Navbar.Collapse>
+            </Container>
+        </Navbar>
+    )
 }
 
 export default NavBar

@@ -10,11 +10,14 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from 'react-router-dom';
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 import axios from "axios";
 
 function LoginForm() {
     const navigate = useNavigate();
     const [errorMessage, setErrorMessage] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const {
         register,
@@ -26,6 +29,7 @@ function LoginForm() {
 
     const onSubmit = async (data) => {
         try {
+            setLoading(true);
             const response = await axios.post("http://localhost:8080/login", {
                 identifier: data.emailOrUname,
                 password: data.cpassword,
@@ -38,6 +42,8 @@ function LoginForm() {
             }
         } catch (error) {
             console.error("Login failed:", error.response.data.error);
+        } finally {
+            setLoading(false)
         }
     };
 
@@ -88,9 +94,9 @@ function LoginForm() {
 
                         <a href="/forgot" className="forgot-link">Forgot Password?</a>
                     </div>
+                                        
 
-
-                    <Button className="login-btn" type="submit">LOGIN</Button>
+                    {loading ? (<Button className="login-btn"><Skeleton width={'50%'} baseColor="#a59132" /></Button>) : (<Button className="login-btn" type="submit">LOGIN</Button>)}
                 </Form>
                 <Toast
                     show={errorMessage !== ''}
@@ -137,9 +143,3 @@ function LoginForm() {
 }
 
 export default LoginForm;
-
-
-
-
-
-

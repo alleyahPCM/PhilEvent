@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Container, Nav, Navbar, Form, Dropdown } from 'react-bootstrap';
+import { Container, Nav, Navbar, Form, Dropdown, Button } from 'react-bootstrap';
 import styled from 'styled-components';
 import { AccountCircle, NotificationsOutlined, Search } from '@mui/icons-material';
 import LogoGreen from '../img/logo-green.png';
@@ -74,8 +74,8 @@ const Link = styled.span`
 const CustomBadge = styled(Badge)(({ theme }) => ({
     cursor: 'pointer',
     '& .MuiBadge-badge': {
-      backgroundColor: '#DA7422', // Replace 'orange' with your desired color
-      color: 'white', // Text color of the badge
+        backgroundColor: '#DA7422', // Replace 'orange' with your desired color
+        color: 'white', // Text color of the badge
     },
 }));
 
@@ -98,7 +98,7 @@ const NavBarAlt = () => {
     const [showUserOption, setShowUserOption] = useState(false);
 
     const handleNotificationsToggle = () => {
-      setShowNotifications(!showNotifications);
+        setShowNotifications(!showNotifications);
     };
 
     const handleUserOptionToggle = () => {
@@ -116,76 +116,87 @@ const NavBarAlt = () => {
     };
 
     const location = useLocation();
-    const isFixedNavbar = (location.pathname === '/UserHome' || 
-    location.pathname === '/Calendar' || location.pathname === '/MyEvents' || location.pathname === '/Settings');
+    const isFixedNavbar = (location.pathname === '/UserHome' ||
+        location.pathname === '/Calendar' || location.pathname === '/MyEvents' || location.pathname === '/Settings');
 
     const NavBarComponent = isFixedNavbar ? FixedStyledNavbar : NonFixedStyledNavbar;
 
+    const [searchValue, setSearchValue] = useState('');
 
-  return (
-    <NavBarComponent collapseOnSelect expand="lg">
-        <Container>
-            <Navbar.Brand href="/" style={{paddingTop: 10, display: 'flex'}}>
-                <img src={LogoGreen} alt='logo' style={{width: 40, height: 40}}/>
-                <LogoText>PhilEvent.</LogoText>
-            </Navbar.Brand>
-            <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-            <Navbar.Collapse id="responsive-navbar-nav">
-                <Nav className="me-auto">
-                    <Nav.Link href="/UserHome"><Link>Home</Link></Nav.Link>
-                    <Nav.Link href="/#events"><Link>Events</Link></Nav.Link>
-                    <Nav.Link href="/Places"><Link>Places</Link></Nav.Link>
-                </Nav>
-                <Form className="d-flex">
-                    <SearchContainer>
-                        <SearchBar
-                            type="search"
-                            placeholder="Search"
-                            className="border-0"
-                            aria-label="Search"
-                        />
-                        <SearchIcon />
-                    </SearchContainer>
-                </Form>
-                <Nav>
-                {isSmallScreen ? (
-                    <>
-                    <Nav.Link href="#notifications"><Link>Notifications</Link></Nav.Link>
-                    <Nav.Link href="/Settings"><Link>Settings</Link></Nav.Link>
-                    <Nav.Link onClick={handleLogout}><Link>Logout</Link></Nav.Link>
-                    </>
-                ) : (
-                    <>
-                    <CustomBadge badgeContent={4} onClick={handleNotificationsToggle}>
-                        <NotificationsOutlined color="action" />
-                    </CustomBadge>
-                    <Dropdown align="end" show={showNotifications} onClose={() => setShowNotifications(false)}>
-                        <CustomDropdownToggle as={CustomBadge} id="notifications-dropdown" />
-                        <Dropdown.Menu>
-                        <CustomItem href="#notification1">Notification 1</CustomItem>
-                        <CustomItem href="#notification2">Notification 2</CustomItem>
-                        <CustomItem href="#notification3">Notification 3</CustomItem>
-                        </Dropdown.Menu>
-                    </Dropdown>
-                    <CustomBadge onClick={handleUserOptionToggle} style={{ marginLeft: '10px',}}>
-                        <AccountCircle color="action"/>
-                    </CustomBadge>
-                    <Dropdown align="end" show={showUserOption} onClose={() => setShowUserOption(false)}>
-                        <CustomDropdownToggle as={CustomBadge} id="user-options-dropdown" />
-                        <Dropdown.Menu>
-                        <CustomItem href="/Settings">Settings</CustomItem>
-                        <CustomItem onClick={handleLogout}>Logout</CustomItem>
-                        </Dropdown.Menu>
-                    </Dropdown>
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        if (searchValue !== '') {
+            window.location.href = `/Search?search=${encodeURIComponent(searchValue)}`;
+        }
+    };
 
-                    
-                    </>
-                )}
-                </Nav>
-            </Navbar.Collapse>
-        </Container>
-    </NavBarComponent>
-  )
+
+    return (
+        <NavBarComponent collapseOnSelect expand="lg">
+            <Container>
+                <Navbar.Brand href="/" style={{ paddingTop: 10, display: 'flex' }}>
+                    <img src={LogoGreen} alt='logo' style={{ width: 40, height: 40 }} />
+                    <LogoText>PhilEvent.</LogoText>
+                </Navbar.Brand>
+                <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+                <Navbar.Collapse id="responsive-navbar-nav">
+                    <Nav className="me-auto">
+                        <Nav.Link href="/UserHome"><Link>Home</Link></Nav.Link>
+                        <Nav.Link href="/#events"><Link>Events</Link></Nav.Link>
+                        <Nav.Link href="/Places"><Link>Places</Link></Nav.Link>
+                    </Nav>
+                    <Form className="d-flex" onSubmit={handleSubmit}>
+                        <SearchContainer>
+                            <SearchBar
+                                type="search"
+                                name="searsh"
+                                placeholder="Search"
+                                className="border-0"
+                                aria-label="Search"
+                                onChange={(e) => setSearchValue(e.target.value)}
+                            />
+                            <Button type="submit" variant="link"><SearchIcon /></Button>
+                        </SearchContainer>
+                    </Form>
+                    <Nav>
+                        {isSmallScreen ? (
+                            <>
+                                <Nav.Link href="#notifications"><Link>Notifications</Link></Nav.Link>
+                                <Nav.Link href="/Settings"><Link>Settings</Link></Nav.Link>
+                                <Nav.Link onClick={handleLogout}><Link>Logout</Link></Nav.Link>
+                            </>
+                        ) : (
+                            <>
+                                <CustomBadge badgeContent={4} onClick={handleNotificationsToggle}>
+                                    <NotificationsOutlined color="action" />
+                                </CustomBadge>
+                                <Dropdown align="end" show={showNotifications} onClose={() => setShowNotifications(false)}>
+                                    <CustomDropdownToggle as={CustomBadge} id="notifications-dropdown" />
+                                    <Dropdown.Menu>
+                                        <CustomItem href="#notification1">Notification 1</CustomItem>
+                                        <CustomItem href="#notification2">Notification 2</CustomItem>
+                                        <CustomItem href="#notification3">Notification 3</CustomItem>
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                                <CustomBadge onClick={handleUserOptionToggle} style={{ marginLeft: '10px', }}>
+                                    <AccountCircle color="action" />
+                                </CustomBadge>
+                                <Dropdown align="end" show={showUserOption} onClose={() => setShowUserOption(false)}>
+                                    <CustomDropdownToggle as={CustomBadge} id="user-options-dropdown" />
+                                    <Dropdown.Menu>
+                                        <CustomItem href="/Settings">Settings</CustomItem>
+                                        <CustomItem onClick={handleLogout}>Logout</CustomItem>
+                                    </Dropdown.Menu>
+                                </Dropdown>
+
+
+                            </>
+                        )}
+                    </Nav>
+                </Navbar.Collapse>
+            </Container>
+        </NavBarComponent>
+    )
 }
 
 export default NavBarAlt

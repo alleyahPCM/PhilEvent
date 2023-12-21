@@ -12,10 +12,13 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from 'react-router-dom';
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai'; 
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 function SignUpForm() {
     const navigate = useNavigate();
     const [errorMessage, setErrorMessage] = useState('');
+    const [loading, setLoading] = useState(false);
     const {register, handleSubmit, formState: { errors }} = useForm({
         resolver: yupResolver(signupSchema),
     });
@@ -23,6 +26,7 @@ function SignUpForm() {
     const onSubmit = async (data) => {
         const { terms, confirmPassword, ...formData } = data;
         try {
+            setLoading(true)
             await axios.post("http://localhost:8080/signup", formData);
             navigate("/UserHome")
         } catch (err) {
@@ -32,6 +36,8 @@ function SignUpForm() {
             } else {
                 setErrorMessage('An error occurred during signup.');
             }
+        } finally {
+            setLoading(true)
         }
     };
 
@@ -124,7 +130,7 @@ function SignUpForm() {
                     <p className="error">{errors.terms?.message}</p>
                 </Form.Group>
                 ))}
-                <Button className="signup-btn" type="submit">SIGN UP</Button>
+                    {loading ? (<Button className="signup-btn"><Skeleton width={'50%'} baseColor="#da7422" /></Button>) : (<Button className="signup-btn" type="submit">SIGN UP</Button>)}
             </Form>
             <Toast
                 show={errorMessage !== ''}
