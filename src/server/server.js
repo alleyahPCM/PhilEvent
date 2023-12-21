@@ -6,6 +6,510 @@ const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const { spawn } = require("child_process");
+const swaggerJsdoc = require("swagger-jsdoc");
+const swaggerUi = require("swagger-ui-express");
+
+const app = express();
+const options = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "PhilEvent APIs",
+      version: "v1",
+      description:
+        "In Fulfillment Of the Requirements for CS 3105 - Application Development | Passed by: Joseph Aaron Amora - 21103553 and Alleyah Pauline Manalili - 21100049",
+    },
+    servers: [
+      {
+        url: "http://localhost:3000",
+      },
+    ],
+  },
+  apis: [__filename],
+};
+
+const specs = swaggerJsdoc(options);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
+
+/**
+ * @swagger
+ * tags:
+ *   - name: Authentication
+ *     description: User authentication and session management
+ *
+ *   - name: Events
+ *     description: Operations related to events and event data
+ *
+ *   - name: User
+ *     description: User-related operations, including user information and saved events
+ *
+ *   - name: UserSession
+ *     description: Operations related to user sessions and authentication status
+ *
+ * /:
+ *   get:
+ *     summary: Check if the user is logged in
+ *     tags: [UserSession]
+ *     responses:
+ *       200:
+ *         description: Returns user information if logged in
+ *         content:
+ *           application/json:
+ *             example:
+ *               valid: true
+ *               name: JohnDoe
+ *       404:
+ *         description: Returns false if not logged in
+ *         content:
+ *           application/json:
+ *             example:
+ *               valid: false
+ *
+ * /login:
+ *   post:
+ *     summary: Log in a user
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               identifier:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Login successful
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: true
+ *               message: Login successful
+ *               name: JohnDoe
+ *       402:
+ *         description: Invalid Password
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: false
+ *               message: Invalid Password!
+ *       401:
+ *         description: User not Found
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: false
+ *               message: User not Found!
+ *
+ * /signup:
+ *   post:
+ *     summary: Sign up a new user
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               firstName:
+ *                 type: string
+ *               lastName:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               uname:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Signup successful
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: Signup Complete!
+ *       400:
+ *         description: Username or email already exists
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: Username or email already exists
+ *
+ * /logout:
+ *   get:
+ *     summary: Log out the user
+ *     tags: [UserSession]
+ *     responses:
+ *       200:
+ *         description: Logout successful
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: true
+ *               message: Logout successful
+ *       500:
+ *         description: Logout failed
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: false
+ *               message: Logout failed
+ *
+ * /fetch-user-info:
+ *   get:
+ *     summary: Fetch user information
+ *     tags: [User]
+ *     responses:
+ *       200:
+ *         description: Returns user information
+ *         content:
+ *           application/json:
+ *             example:
+ *               user:
+ *                 firstName: John
+ *                 lastName: Doe
+ *                 username: JohnDoe
+ *                 email: johnexample.com
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: Unauthorized
+ *
+ * /update-user-info:
+ *   put:
+ *     summary: Update user information
+ *     tags: [User]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               firstName:
+ *                 type: string
+ *               lastName:
+ *                 type: string
+ *               username:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               pass:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: User information updated successfully
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: true
+ *               message: User information updated successfully!
+ *       400:
+ *         description: Email or username already exists for another user
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: Email or username already exists for another user
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: Unauthorized
+ *
+ * /allevents:
+ *   get:
+ *     summary: Get all events based on filters
+ *     tags: [Events]
+ *     parameters:
+ *       - in: query
+ *         name: city
+ *         schema:
+ *           type: string
+ *         description: Filter events by city
+ *       - in: query
+ *         name: startDate
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: Filter events by start date
+ *       - in: query
+ *         name: endDate
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: Filter events by end date
+ *     responses:
+ *       200:
+ *         description: Returns a list of events
+ *         content:
+ *           application/json:
+ *             example:
+ *               - id: 1
+ *                 img: event_image.jpg
+ *                 title: Event Title
+ *                 date: December 21, 2023
+ *                 time: 7:00 PM
+ *                 city: City
+ *                 price: 20.00
+ *                 link: https://eventlink.com
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: Internal Server Error
+ *
+ * /events/{id}:
+ *   get:
+ *     summary: Get a specific event by ID
+ *     tags: [Events]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Event ID
+ *     responses:
+ *       200:
+ *         description: Returns details of a specific event
+ *         content:
+ *           application/json:
+ *             example:
+ *               id: 1
+ *               img: event_image.jpg
+ *               title: Event Title
+ *               date: December 21, 2023
+ *               time: 7:00 PM
+ *               city: City
+ *               address: Event Address
+ *               description: Event Description
+ *               price: 20.00
+ *               link: https://eventlink.com
+ *       404:
+ *         description: Event not found
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: Event not found
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: Internal Server Error
+ *
+ * /searchevents/{search}:
+ *   get:
+ *     summary: Search events by title
+ *     tags: [Events]
+ *     parameters:
+ *       - in: path
+ *         name: search
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Search term for event titles
+ *       - in: query
+ *         name: city
+ *         schema:
+ *           type: string
+ *         description: Filter events by city
+ *       - in: query
+ *         name: startDate
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: Filter events by start date
+ *       - in: query
+ *         name: endDate
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: Filter events by end date
+ *     responses:
+ *       200:
+ *         description: Returns a list of events matching the search term
+ *         content:
+ *           application/json:
+ *             example:
+ *               - id: 1
+ *                 img: event_image.jpg
+ *                 title: Event Title
+ *                 date: December 21, 2023
+ *                 time: 7:00 PM
+ *                 city: City
+ *                 price: 20.00
+ *                 link: https://eventlink.com
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: Internal Server Error
+ *
+ * /uniquecities:
+ *   get:
+ *     summary: Get unique cities with events
+ *     tags: [Events]
+ *     responses:
+ *       200:
+ *         description: Returns a list of unique cities with events
+ *         content:
+ *           application/json:
+ *             example:
+ *               cities:
+ *                 - City1
+ *                 - City2
+ *       500:
+ *         description: Failed to fetch cities
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: Failed to fetch cities
+ *
+ * /userweek:
+ *   get:
+ *     summary: Get events for a user within a specified date range
+ *     tags: [User]
+ *     parameters:
+ *       - in: query
+ *         name: startDate
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: Start date for the user's events
+ *       - in: query
+ *         name: endDate
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: End date for the user's events
+ *     responses:
+ *       200:
+ *         description: Returns a list of events for the user within the specified date range
+ *         content:
+ *           application/json:
+ *             example:
+ *               - id: 1
+ *                 img: event_image.jpg
+ *                 title: Event Title
+ *                 date: December 21, 2023
+ *                 address: Event Address
+ *                 time: 7:00 PM
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: Internal Server Error
+ *
+ * /userevents:
+ *   get:
+ *     summary: Get events saved by the user
+ *     tags: [User]
+ *     responses:
+ *       200:
+ *         description: Returns a list of events saved by the user
+ *         content:
+ *           application/json:
+ *             example:
+ *               - id: 1
+ *                 img: event_image.jpg
+ *                 title: Event Title
+ *                 date: December 21, 2023
+ *                 time: 7:00 PM
+ *                 city: City
+ *                 price: 20.00
+ *                 link: https://eventlink.com
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: Internal Server Error
+ *
+ * /usercalendar:
+ *   get:
+ *     summary: Get events for the user in a format suitable for a calendar
+ *     tags: [User]
+ *     responses:
+ *       200:
+ *         description: Returns a list of events for the user in a calendar-friendly format
+ *         content:
+ *           application/json:
+ *             example:
+ *               - title: Event Title
+ *                 start: 2023-12-21T00:00:00.000Z
+ *                 end: 2023-12-21T00:00:00.000Z
+ *                 description: Event Title on December 21, 2023 | 7:00 PM - City
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: Internal Server Error
+ *
+ * /addevent/{id}:
+ *   post:
+ *     summary: Add an event to the user's saved events
+ *     tags: [User]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Event ID
+ *     responses:
+ *       200:
+ *         description: Event Added!
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: true
+ *               message: Event Added!
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: Internal Server Error
+ *
+ * /removeevent/{id}:
+ *   delete:
+ *     summary: Remove an event from the user's saved events
+ *     tags: [User]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Event ID
+ *     responses:
+ *       200:
+ *         description: Successfully removed from your saved events!
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: true
+ *               message: Successfully removed from your saved events!
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: Internal Server Error
+ *
+ */
 
 function formatToMonthDayYear(dateTimeString) {
   const options = { year: "numeric", month: "long", day: "numeric" };
@@ -22,7 +526,6 @@ function formatToTimeAMPM(timeString) {
   });
 }
 
-const app = express();
 app.use(express.json());
 app.use(
   cors({
@@ -147,7 +650,7 @@ app.get("/searchevents/:search", (req, res) => {
   if (filters.length > 0) {
     q += ` AND ${filters.join(" AND ")}`;
   }
-  console.log(q)
+  console.log(q);
   db.query(q, (err, data) => {
     if (err) {
       return res.status(500).json({ error: "Internal Server Error" });
@@ -207,8 +710,8 @@ app.get("/userweek", (req, res) => {
   if (startDate && endDate) {
     q += ` AND e.date BETWEEN ? AND ?`;
     // Convert the dates to the format 'YYYY-MM-DD' for the SQL query
-    const formattedStartDate = new Date(startDate).toISOString().split('T')[0];
-    const formattedEndDate = new Date(endDate).toISOString().split('T')[0];
+    const formattedStartDate = new Date(startDate).toISOString().split("T")[0];
+    const formattedEndDate = new Date(endDate).toISOString().split("T")[0];
 
     queryParams.push(formattedStartDate, formattedEndDate);
   }
@@ -230,7 +733,6 @@ app.get("/userweek", (req, res) => {
     return res.json(formattedEvents);
   });
 });
-
 
 app.get("/userevents", (req, res) => {
   const q = `SELECT e.*, u.event_id FROM user_events u, events e WHERE e.id = u.event_id AND u.username = '${req.session.username}'`;
@@ -359,7 +861,10 @@ app.delete("/removeevent/:id", (req, res) => {
       return res.status(500).json({ error: "Internal Server Error" });
     }
 
-    return res.json({ success: true, message: "Successfully removed from your saved events!" });
+    return res.json({
+      success: true,
+      message: "Successfully removed from your saved events!",
+    });
   });
 });
 
@@ -484,7 +989,7 @@ app.put("/update-user-info", (req, res) => {
     const checkQuery =
       "SELECT * FROM accounts WHERE (username = ? OR email = ?) AND email != ?";
     const checkValues = [username, email, req.session.email];
-    
+
     db.query(checkQuery, checkValues, async (checkErr, checkData) => {
       if (checkErr) {
         return res.status(500).json({ error: "Internal Server Error" });

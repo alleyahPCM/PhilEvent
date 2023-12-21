@@ -11,7 +11,7 @@ password = ""
 database = "philevent"
 
 def store():
-    cities = ["cebu", "manila", "davao"]
+    cities = ["cebu", "manila", "davao", "bacolod", "makati"]
 
     try:
         connection = mysql.connector.connect(
@@ -49,7 +49,10 @@ def store():
                     date = dt.split(" at ")[0]
                     time = dt.split(" at ")[1].split(" to ")[0]
                     desc = soup2.find('div', class_="event-description-html").text.strip()
-                    img = soup2.find('img', class_="event-banner-image hidden-phone lazy")['src']
+                    try:
+                        img = soup2.find('img', class_="event-banner-image hidden-phone lazy")['src']
+                    except:
+                        img = 'https://img.freepik.com/premium-vector/illuminated-stage-blue-smoke-night-lightning-fog-searchlight-beams-empty-presentation-3d-platform-mockup-with-mist-spotlight-ray-glowing-particles-scene-illumination-vector-background_533410-1168.jpg'
                     date_object = datetime.strptime(date, "%a %b %d %Y")
                     date = date_object.strftime("%Y-%m-%d")
                     time_object = datetime.strptime(time, "%I:%M %p")
