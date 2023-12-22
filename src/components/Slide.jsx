@@ -20,24 +20,22 @@ const Slide = () => {
       <Carousel.Item style={{height:480}}>
         <CarouselImage src={c1Image} alt="c1Image" text="First slide"/>
         <Carousel.Caption>
-          <h3>First slide label</h3>
-          <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
+          <h3>Discover: PhilEvent - Your Gateway to Philippine Events</h3>
+          <p>✨ Uncover events in the Philippines through PhilEvent's comprehensive event search. ✨</p>
         </Carousel.Caption>
       </Carousel.Item>
       <Carousel.Item style={{height:480}}>
         <CarouselImage src={c2Image} alt="c12Image" text="Second slide" />
         <Carousel.Caption>
-          <h3>Second slide label</h3>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+          <h3>Seamless Event Management: Real-Time Saving, Dashboard, and Calendar Tracking</h3>
+          <p>Save your favorite events effortlessly with PhilEvent's intuitive system. Never miss a moment! 📅💫</p>
         </Carousel.Caption>
       </Carousel.Item>
       <Carousel.Item style={{height:480}}>
         <CarouselImage src={c3Image} alt="c3Image" text="Third slide" />
         <Carousel.Caption>
-          <h3>Third slide label</h3>
-          <p>
-            Praesent commodo cursus magna, vel scelerisque nisl consectetur.
-          </p>
+          <h3>Embark on Adventure</h3>
+          <p>Exploring the Philippines, one event at a time. Start your journey with PhilEvent today! 🌟 #PhilEventDiscovery</p>
         </Carousel.Caption>
       </Carousel.Item>
     </Carousel>
