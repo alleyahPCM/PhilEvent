@@ -65,48 +65,9 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
  *             example:
  *               valid: false
  *
- * /login:
- *   post:
- *     summary: Log in a user
- *     tags: [Authentication]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               identifier:
- *                 type: string
- *               password:
- *                 type: string
- *     responses:
- *       200:
- *         description: Login successful
- *         content:
- *           application/json:
- *             example:
- *               success: true
- *               message: Login successful
- *               name: JohnDoe
- *       402:
- *         description: Invalid Password
- *         content:
- *           application/json:
- *             example:
- *               success: false
- *               message: Invalid Password!
- *       401:
- *         description: User not Found
- *         content:
- *           application/json:
- *             example:
- *               success: false
- *               message: User not Found!
- *
  * /signup:
  *   post:
- *     summary: Sign up a new user
+ *     summary: User signup
  *     tags: [Authentication]
  *     requestBody:
  *       required: true
@@ -127,7 +88,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
  *                 type: string
  *     responses:
  *       200:
- *         description: Signup successful
+ *         description: Signup complete
  *         content:
  *           application/json:
  *             example:
@@ -138,26 +99,58 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
  *           application/json:
  *             example:
  *               error: Username or email already exists
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: Internal Server Error
  *
- * /logout:
- *   get:
- *     summary: Log out the user
- *     tags: [UserSession]
+ * /login:
+ *   post:
+ *     summary: User login
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               identifier:
+ *                 type: string
+ *               password:
+ *                 type: string
  *     responses:
  *       200:
- *         description: Logout successful
+ *         description: Login successful
  *         content:
  *           application/json:
  *             example:
  *               success: true
- *               message: Logout successful
- *       500:
- *         description: Logout failed
+ *               message: Login successful
+ *               name: { "email": "user@example.com", "username": "exampleUser", "authority": "User" }
+ *               authority: User
+ *       401:
+ *         description: Invalid Password
  *         content:
  *           application/json:
  *             example:
  *               success: false
- *               message: Logout failed
+ *               message: Invalid Password!
+ *       400:
+ *         description: User not Found
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: false
+ *               message: User not Found!
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: Internal Server Error
  *
  * /fetch-user-info:
  *   get:
@@ -173,13 +166,100 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
  *                 firstName: John
  *                 lastName: Doe
  *                 username: JohnDoe
- *                 email: johnexample.com
+ *                 email: john@example.com
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: User not found
  *       401:
  *         description: Unauthorized
  *         content:
  *           application/json:
  *             example:
  *               error: Unauthorized
+ *
+ * /fetch-all-users-info:
+ *   get:
+ *     summary: Fetch information of all users (Admin only)
+ *     tags: [Admin]
+ *     responses:
+ *       200:
+ *         description: Returns information of all users
+ *         content:
+ *           application/json:
+ *             example:
+ *               users:
+ *                 - id: 1
+ *                   firstName: John
+ *                   lastName: Doe
+ *                   username: JohnDoe
+ *                   email: john@example.com
+ *                   authority: User
+ *       404:
+ *         description: No users found
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: No users found
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: Unauthorized
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: Internal Server Error
+ *
+ * /update-user-authority/{userId}:
+ *   put:
+ *     summary: Update user authority (Admin only)
+ *     tags: [Admin]
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: User ID
+ *       - in: body
+ *         name: newAuthority
+ *         required: true
+ *         schema:
+ *           type: object
+ *           properties:
+ *             newAuthority:
+ *               type: string
+ *     responses:
+ *       200:
+ *         description: Authority updated successfully
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: Authority updated successfully
+ *       400:
+ *         description: Missing parameters
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: Missing parameters
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: User not found
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: Internal Server Error
  *
  * /update-user-info:
  *   put:
@@ -222,6 +302,12 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
  *           application/json:
  *             example:
  *               error: Unauthorized
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: Internal Server Error
  *
  * /allevents:
  *   get:
@@ -766,12 +852,15 @@ app.get("/usercalendar", (req, res) => {
     }
 
     const formattedEvents = data.map((event) => {
-      const formattedCity = event.city.charAt(0).toUpperCase() + event.city.slice(1);
+      const formattedCity =
+        event.city.charAt(0).toUpperCase() + event.city.slice(1);
       return {
         title: event.title,
         start: new Date(event.date),
         end: new Date(event.date),
-        description: `${event.title} on ${formatToMonthDayYear(event.date)} | ${formatToTimeAMPM(event.time)} - ${formattedCity}`,
+        description: `${event.title} on ${formatToMonthDayYear(
+          event.date
+        )} | ${formatToTimeAMPM(event.time)} - ${formattedCity}`,
       };
     });
 
@@ -898,13 +987,14 @@ app.post("/signup", (req, res) => {
     }
     const password = await bcrypt.hash(req.body.password, 10);
     const insertQuery =
-      "INSERT INTO accounts (`firstname`, `lastname`, `email`, `username`, `password`) VALUES (?)";
+      "INSERT INTO accounts (`firstname`, `lastname`, `email`, `username`, `password`, `authority`) VALUES (?)";
     const insertValues = [
       req.body.firstName,
       req.body.lastName,
       req.body.email,
       req.body.uname,
       password,
+      "User",
     ];
 
     db.query(insertQuery, [insertValues], (insertErr, insertData) => {
@@ -913,6 +1003,7 @@ app.post("/signup", (req, res) => {
       }
       req.session.email = req.body.email;
       req.session.username = req.body.uname;
+      req.session.authority = "User";
       return res.json({ message: "Signup Complete!" });
     });
   });
@@ -921,7 +1012,8 @@ app.post("/signup", (req, res) => {
 app.post("/login", (req, res) => {
   const { identifier, password } = req.body;
 
-  const selectQuery = "SELECT email, username, authority, password FROM accounts WHERE (email = ? OR username = ?) AND authority <> 'Deactivated'";
+  const selectQuery =
+    "SELECT email, username, authority, password FROM accounts WHERE (email = ? OR username = ?) AND authority <> 'Deactivated'";
   db.query(
     selectQuery,
     [identifier, identifier],
@@ -936,14 +1028,14 @@ app.post("/login", (req, res) => {
         if (match) {
           req.session.email = selectData[0].email;
           req.session.username = selectData[0].username;
-          // Include authority in the response
+          req.session.authority = selectData[0].authority;
           const userAuthority = selectData[0].authority;
 
           return res.json({
             success: true,
             message: "Login successful",
             name: req.session,
-            authority: userAuthority // Include the user's authority in the response
+            authority: userAuthority,
           });
         } else {
           return res.json({
@@ -960,7 +1052,6 @@ app.post("/login", (req, res) => {
     }
   );
 });
-
 
 app.get("/fetch-user-info", (req, res) => {
   if (req.session.email) {
@@ -988,9 +1079,8 @@ app.get("/fetch-user-info", (req, res) => {
   }
 });
 
-
 app.get("/fetch-all-users-info", (req, res) => {
-  if (req.session && req.session.email) {
+  if (req.session && req.session.authority == "Admin") {
     const selectQuery = "SELECT * FROM accounts";
     db.query(selectQuery, (selectErr, selectData) => {
       if (selectErr) {
@@ -998,7 +1088,7 @@ app.get("/fetch-all-users-info", (req, res) => {
       }
 
       if (selectData && selectData.length > 0) {
-        const users = selectData.map(user => ({
+        const users = selectData.map((user) => ({
           id: user.id,
           firstName: user.firstname,
           lastName: user.lastname,
@@ -1018,25 +1108,25 @@ app.get("/fetch-all-users-info", (req, res) => {
 });
 
 // Update user authority endpoint
-app.put('/update-user-authority/:userId', (req, res) => {
+app.put("/update-user-authority/:userId", (req, res) => {
   const { userId } = req.params;
   const { newAuthority } = req.body;
 
   if (!userId || !newAuthority) {
-    return res.status(400).json({ error: 'Missing parameters' });
+    return res.status(400).json({ error: "Missing parameters" });
   }
 
-  const updateQuery = 'UPDATE accounts SET authority = ? WHERE id = ?';
+  const updateQuery = "UPDATE accounts SET authority = ? WHERE id = ?";
   db.query(updateQuery, [newAuthority, userId], (error, result) => {
     if (error) {
-      return res.status(500).json({ error: 'Error updating authority' });
+      return res.status(500).json({ error: "Error updating authority" });
     }
 
     if (result.affectedRows === 0) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: "User not found" });
     }
 
-    return res.status(200).json({ message: 'Authority updated successfully' });
+    return res.status(200).json({ message: "Authority updated successfully" });
   });
 });
 

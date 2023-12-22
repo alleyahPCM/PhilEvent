@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Table, Form } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Users = () => {
+  const navigate = useNavigate();
   const [data, setData] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredData, setFilteredData] = useState([]);
@@ -16,6 +18,9 @@ const Users = () => {
         });
         setData(response.data.users);
       } catch (error) {
+        if (error.response.status === 401) {
+          navigate("/")
+        }
         console.error('Error fetching data:', error);
       }
     };

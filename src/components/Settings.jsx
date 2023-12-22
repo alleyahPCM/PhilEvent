@@ -74,7 +74,6 @@ const Settings = () => {
         const user = res.data.user;
         setUserInfo(user);
         setInitialUserInfo(user);
-        console.log(user);
       })
       .catch(err => console.log(err))
   }, []);
