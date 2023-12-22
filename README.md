@@ -1,70 +1,35 @@
-# Getting Started with Create React App
+# PhilEvent
+Introducing PhilEvent, a dedicated event aggregation platform designed to address the absence of a centralized hub for event information in the Philippines. The current fragmented landscape makes it challenging for both enthusiasts and organizers to access comprehensive details about upcoming activities. PhilEvent bridges this gap by employing web scraping techniques to gather information from various sources, consolidating it into a single, accessible database. Developed using ReactJS, a dynamic and responsive JavaScript toolkit, the platform ensures a consistent user experience with interactive elements for enhanced engagement. Real-time updates through web scraping technology keep PhilEvent current, providing users with the latest information on diverse events across the country. Join us in creating a vibrant and connected event community, where you can explore, stay informed, and make the most of your event experiences.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Prerequisites
 
-## Available Scripts
+Before running the application, make sure you have the following prerequisites:
 
-In the project directory, you can run:
+### 1. Python Libraries
+Open a terminal and install the required Python libraries:
+```
+pip install beautifulsoup4
+pip install mysql-connector-python
+pip install lxml
+```
 
-### `npm start`
+### 2. Database Setup
+* Open XAMPP and start both Apache and MySQL.
+* In phpMyAdmin, create a table named "philevent" and import the philevent.sql file.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### 3. Running the Application
+Follow these steps to run the PhilEvent application:
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- Install Node Libraries
+Run the following command to install the required Node libraries:
+```npm install```
 
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- Configure MySQL Connection
+If you have set a username and password for your phpMyAdmin, update the following files with your credentials:
+```
+src/server/server.js (Line 639 and 640)
+src/server/webscrapper.js (Line 9 and 10)
+```
+- Run the Program
+Execute the following command to start the application:
+```npm start```
