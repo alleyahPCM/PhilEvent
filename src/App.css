@@ -234,3 +234,19 @@
   .test {
     justify-content: space-between;
   }
+
+  .search-input-container {
+    position: relative;
+  }
+  
+  .search-input {
+    padding-right: 30px; /* Adjust the padding to accommodate the icon */
+  }
+  
+  .search-icon {
+    position: absolute;
+    right: 8px; /* Align the icon to the right */
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none; /* Ensure the icon doesn't interfere with input events */
+  }
