@@ -20,16 +20,18 @@ pip install lxml
 ### 3. Running the Application
 Follow these steps to run the PhilEvent application:
 
-- Install Node Libraries
+- Install Node Libraries\
 Run the following command to install the required Node libraries:
 ```npm install```
 
-- Configure MySQL Connection
+- Configure MySQL Connection\
 If you have set a username and password for your phpMyAdmin, update the following files with your credentials:
 ```
 src/server/server.js (Line 639 and 640)
 src/server/webscrapper.js (Line 9 and 10)
 ```
-- Run the Program
+- Run the Program\
 Execute the following command to start the application:
-```npm start```
+```npm start```\
+(Depending on your system, it might take a while to start due to the webscrapper running and pushing data to the database)
+
