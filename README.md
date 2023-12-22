@@ -33,5 +33,7 @@ src/server/webscrapper.js (Line 9 and 10)
 - Run the Program\
 Execute the following command to start the application:
 ```npm start```\
-(Depending on your system, it might take a while to start due to the webscrapper running and pushing data to the database)
+(Depending on your system, it might take a while to start due to the webscraper running and pushing data to the database)
+
+## For API Documentation, Run the program and go to http://localhost:8080/api-docs/
 
