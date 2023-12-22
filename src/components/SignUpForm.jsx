@@ -71,14 +71,12 @@ function SignUpForm() {
                     </Form.Group>
                 </div>
                 {errors.firstName && errors.lastName ? (
-                    <div>
-                        <p className="error">{`First Name and Last Name are required!`}</p>
-                    </div>
+                    <p className="error">First Name and Last Name are required!</p>
                 ) : (
-                <div>
-                    <p className="error">{errors.firstName?.message}</p>
-                    <p className="error">{errors.lastName?.message}</p>
-                </div>
+                    <>
+                        {errors.firstName && <p className="error">{errors.firstName?.message}</p>}
+                        {errors.lastName && <p className="error">{errors.lastName?.message}</p>}
+                    </>
                 )}
 
                 <Form.Group className="mb-3" controlId="formBasicUsername">
