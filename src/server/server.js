@@ -921,7 +921,7 @@ app.post("/signup", (req, res) => {
 app.post("/login", (req, res) => {
   const { identifier, password } = req.body;
 
-  const selectQuery = "SELECT * FROM accounts WHERE email = ? OR username = ?";
+  const selectQuery = "SELECT email, username, authority, password FROM accounts WHERE (email = ? OR username = ?) AND authority <> 'Deactivated'";
   db.query(
     selectQuery,
     [identifier, identifier],
@@ -936,10 +936,14 @@ app.post("/login", (req, res) => {
         if (match) {
           req.session.email = selectData[0].email;
           req.session.username = selectData[0].username;
+          // Include authority in the response
+          const userAuthority = selectData[0].authority;
+
           return res.json({
             success: true,
             message: "Login successful",
             name: req.session,
+            authority: userAuthority // Include the user's authority in the response
           });
         } else {
           return res.json({
@@ -956,6 +960,7 @@ app.post("/login", (req, res) => {
     }
   );
 });
+
 
 app.get("/fetch-user-info", (req, res) => {
   if (req.session.email) {
@@ -981,6 +986,58 @@ app.get("/fetch-user-info", (req, res) => {
   } else {
     return res.status(401).json({ error: "Unauthorized" });
   }
+});
+
+
+app.get("/fetch-all-users-info", (req, res) => {
+  if (req.session && req.session.email) {
+    const selectQuery = "SELECT * FROM accounts";
+    db.query(selectQuery, (selectErr, selectData) => {
+      if (selectErr) {
+        return res.status(500).json({ error: "Error retrieving user data" });
+      }
+
+      if (selectData && selectData.length > 0) {
+        const users = selectData.map(user => ({
+          id: user.id,
+          firstName: user.firstname,
+          lastName: user.lastname,
+          username: user.username,
+          email: user.email,
+          authority: user.authority,
+        }));
+
+        return res.json({ users });
+      } else {
+        return res.status(404).json({ error: "No users found" });
+      }
+    });
+  } else {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+});
+
+// Update user authority endpoint
+app.put('/update-user-authority/:userId', (req, res) => {
+  const { userId } = req.params;
+  const { newAuthority } = req.body;
+
+  if (!userId || !newAuthority) {
+    return res.status(400).json({ error: 'Missing parameters' });
+  }
+
+  const updateQuery = 'UPDATE accounts SET authority = ? WHERE id = ?';
+  db.query(updateQuery, [newAuthority, userId], (error, result) => {
+    if (error) {
+      return res.status(500).json({ error: 'Error updating authority' });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    return res.status(200).json({ message: 'Authority updated successfully' });
+  });
 });
 
 app.put("/update-user-info", (req, res) => {

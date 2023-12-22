@@ -34,9 +34,17 @@ function LoginForm() {
                 identifier: data.emailOrUname,
                 password: data.cpassword,
             });
-
+    
             if (response.data.success) {
-                navigate('/UserHome');
+                const userAuthority = response.data.authority; // Assuming the authority is returned in the response
+    
+                if (userAuthority === 'User') {
+                    navigate('/UserHome');
+                } else if (userAuthority === 'Admin') {
+                    navigate('/Users');
+                } else {
+                    // Handle other authority types or unexpected cases
+                }
             } else {
                 setErrorMessage(response.data.message);
             }
@@ -46,6 +54,7 @@ function LoginForm() {
             setLoading(false)
         }
     };
+    
 
     const [passwordVisible, setPasswordVisible] = useState(false);
 

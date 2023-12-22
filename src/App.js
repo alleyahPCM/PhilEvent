@@ -10,6 +10,7 @@ import Login from './pages/Login';
 import Event from './pages/Event';
 import Places from './pages/Places';
 import Search from './pages/Search';
+import Users from './pages/Users';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
         <Route path="/MyEvents" element={<UserHome />} />
         <Route path="/Settings" element={<UserHome />} />
         <Route path="/Event/:id" element={<Event />} />
+        <Route path="/Users" element={<Users />} />
       </Routes>
     </div>
   );
